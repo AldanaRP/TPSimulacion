@@ -90,10 +90,21 @@ for p in range(nro_corridas):
     count_total_verde += count_verde
 
     x_range = range(1, nro_tiradas + 1)
+
+    frecuencias = np.bincount(corrida)
+
+    plt.figure(figsize=(8, 6))
+    plt.bar(list(range(37)), frecuencias, edgecolor="black", color="#a855f7", width=0.6)
+    plt.xlabel("Valores")
+    plt.ylabel("Frecuencia absoluta")
+    plt.title(f"Grafico de Barras - Corrida {p + 1}")
+    plt.savefig(f"graficos/Barras_corrida_{p + 1}.png")
+    plt.clf()
+
     plt.figure(figsize=(8, 6))
     plt.hist(corrida, bins=37, edgecolor="black", color="#a855f7")
     plt.xlabel("Valores")
-    plt.ylabel("Frecuencia")
+    plt.ylabel("Frecuencia absoluta")
     plt.title(f"Histograma - Corrida {p + 1}")
     plt.savefig(f"graficos/Histograma_corrida_{p + 1}.png")
     plt.clf()
@@ -110,28 +121,56 @@ for p in range(nro_corridas):
     plt.savefig(f"graficos/GraficoColor_corrida_{p + 1}.png")
     plt.clf()
 
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(13, 10))
 
     plt.subplot(2, 2, 1)
-    plt.plot(x_range, frec_relativa, color='#f97316')
-    plt.axhline(y=frec_esperada, color='#a855f7', linestyle='--')
+    plt.plot(x_range, frec_relativa, color='#f97316', label='Frec. rel.')
+    plt.axhline(y=frec_esperada, color='#a855f7', linestyle='--', label='Frec. rel. esperada')
+    plt.legend()
+    ax = plt.gca()
+    ax.tick_params(axis='y', labelrotation=30)
     plt.title("Frecuencia Relativa")
     plt.ylim(0, 0.1)
 
+    yticks = list(plt.yticks()[0]) + [frec_esperada]
+    yticks = sorted(set(yticks))
+    plt.yticks(yticks)
+
     plt.subplot(2, 2, 2)
-    plt.plot(x_range, promedio, color='#f97316')
-    plt.axhline(y=prom_esperado, color='#a855f7', linestyle='--')
+    plt.plot(x_range, promedio, color='#f97316', label='Prom.')
+    plt.axhline(y=prom_esperado, color='#a855f7', linestyle='--', label='Prom. esperado')
+    plt.legend()
+    ax = plt.gca()
+    ax.tick_params(axis='y', labelrotation=30)
     plt.title("Promedio")
 
+    yticks = list(plt.yticks()[0]) + [prom_esperado]
+    yticks = sorted(set(yticks))
+    plt.yticks(yticks)
+
     plt.subplot(2, 2, 3)
-    plt.plot(x_range, varianza, color='#f97316')
-    plt.axhline(y=varianza_esperada, color='#a855f7', linestyle='--')
+    plt.plot(x_range, varianza, color='#f97316', label='Var.')
+    plt.axhline(y=varianza_esperada, color='#a855f7', linestyle='--', label='Var. esperada')
+    plt.legend()
+    ax = plt.gca()
+    ax.tick_params(axis='y', labelrotation=30)
     plt.title("Varianza")
 
+    yticks = list(plt.yticks()[0]) + [varianza_esperada]
+    yticks = sorted(set(yticks))
+    plt.yticks(yticks)
+
     plt.subplot(2, 2, 4)
-    plt.plot(x_range, desvio, color='#f97316')
-    plt.axhline(y=desvio_esperado, color='#a855f7', linestyle='--')
+    plt.plot(x_range, desvio, color='#f97316', label='Desv.')
+    plt.axhline(y=desvio_esperado, color='#a855f7', linestyle='--', label='Desv. esperado')
+    plt.legend()
+    ax = plt.gca()
+    ax.tick_params(axis='y', labelrotation=30)
     plt.title("Desvío Estándar")
+
+    yticks = list(plt.yticks()[0]) + [desvio_esperado]
+    yticks = sorted(set(yticks))
+    plt.yticks(yticks)
 
     plt.tight_layout()
     plt.savefig(f"graficos/ParametrosCorrida_{p + 1}.png")
@@ -150,7 +189,7 @@ plt.savefig("graficos/GraficoColorTotalCorridas.png")
 plt.clf()
 
 x_range = range(1, nro_tiradas + 1)
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(13, 10))
 
 for i, datos in enumerate(zip(*[iter(frec_relativa_acum)] * nro_tiradas)):
     plt.subplot(2, 2, 1)
@@ -169,31 +208,69 @@ for i, datos in enumerate(zip(*[iter(desvio_acum)] * nro_tiradas)):
     plt.plot(x_range, datos, color=colors[i], alpha=0.7)
 
 plt.subplot(2, 2, 1)
-plt.axhline(y=frec_esperada, color='#a855f7', linestyle='--')
+plt.axhline(y=frec_esperada, color='#a855f7', linestyle='--', label='Frec. rel. esperada')
+plt.legend()
+ax = plt.gca()
+ax.tick_params(axis='y', labelrotation=30)
 plt.title("Frecuencia Relativa")
 plt.ylim(0, 0.1)
 
+yticks = list(plt.yticks()[0]) + [frec_esperada]
+yticks = sorted(set(yticks))
+plt.yticks(yticks)
+
 plt.subplot(2, 2, 2)
-plt.axhline(y=prom_esperado, color='#a855f7', linestyle='--')
+plt.axhline(y=prom_esperado, color='#a855f7', linestyle='--', label='Prom. esperado')
+plt.legend()
+ax = plt.gca()
+ax.tick_params(axis='y', labelrotation=30)
 plt.title("Promedio")
 
+yticks = list(plt.yticks()[0]) + [prom_esperado]
+yticks = sorted(set(yticks))
+plt.yticks(yticks)
+
 plt.subplot(2, 2, 3)
-plt.axhline(y=varianza_esperada, color='#a855f7', linestyle='--')
+plt.axhline(y=varianza_esperada, color='#a855f7', linestyle='--', label='Var. esperada')
+plt.legend()
+ax = plt.gca()
+ax.tick_params(axis='y', labelrotation=30)
 plt.title("Varianza")
 
+yticks = list(plt.yticks()[0]) + [varianza_esperada]
+yticks = sorted(set(yticks))
+plt.yticks(yticks)
+
 plt.subplot(2, 2, 4)
-plt.axhline(y=desvio_esperado, color='#a855f7', linestyle='--')
+plt.axhline(y=desvio_esperado, color='#a855f7', linestyle='--', label='Desv. esperado')
+plt.legend()
+ax = plt.gca()
+ax.tick_params(axis='y', labelrotation=30)
 plt.title("Desvío Estándar")
+
+yticks = list(plt.yticks()[0]) + [desvio_esperado]
+yticks = sorted(set(yticks))
+plt.yticks(yticks)
 
 plt.tight_layout()
 plt.savefig("graficos/ParametrosTiradasTotales.png")
 plt.clf()
 
+frecuencias = np.bincount(corridas_tot)
+
 plt.figure(figsize=(8, 6))
-plt.hist(corridas_tot, bins=np.arange(38), edgecolor='black', color='#a855f7')
+plt.bar(list(range(37)), frecuencias, edgecolor="black", color="#a855f7", width=0.6)
 plt.xlabel('Valores')
-plt.ylabel('Frecuencia')
-plt.title('Histograma Total de Tiradas')
+plt.ylabel('Frecuencia absoluta')
+plt.title('Grafico de Barras - Total de Tiradas')
+plt.savefig("graficos/BarrasTiradasTotales.png")
+plt.clf()
+
+plt.figure(figsize=(8, 6))
+plt.hist(corridas_tot, bins=37, edgecolor='black', color='#a855f7')
+plt.xlabel('Valores')
+plt.ylabel('Frecuencia absoluta')
+plt.title('Histograma - Total de Tiradas')
 plt.savefig("graficos/HistogramaTiradasTotales.png")
 plt.clf()
 
