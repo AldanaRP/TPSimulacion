@@ -4,7 +4,7 @@ Integrantes:
             Ignacio Fierro,
             Lucia Gelmetti,
             Juean Cruz Bonanno,
-            Frabci Reggiardo Chuglar,
+            Franco Reggiardo Chuglar,
             Marcos Oldani,
             Aldana Risso Patron
             
