@@ -1,0 +1,9 @@
+Argumentos de línea de comandos:
+
+-s (estrategia): Define la estrategia a usar. Puede ser 'm' (Martingala), 'd' (D'Alembert), 'f' (Fibonacci) u 'o' (una estrategia personalizada como la de Winogard).
+
+-a (capital): Define si el capital es 'i' (infinito) o 'f' (finito).
+
+-n (número de tiradas): Número de tiradas por corrida (por defecto es 200).
+
+-e (número específico): Permite especificar un número en el que se apuesta (opcional, si no se pasa, no se usa).
