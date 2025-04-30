@@ -56,24 +56,11 @@ class EstrategiaApuesta:
 
     def determinar_ganancia(self, resultado_ruleta):
         """Determina si la apuesta actual fue ganadora y cuánto se ganó.
-        Este método base maneja diferentes tipos de apuestas:
-        - Número específico (ej: 7)
-        - Color (rojo, negro)
-        - Otras apuestas pueden ser implementadas según sea necesario
+        Este método base maneja un solo tipo de apuesta: Color rojo
+        Otras apuestas pueden ser implementadas según sea necesario
         """
-        # Sin selección de apuesta, automáticamente perdemos
-        if self.seleccion_apuesta is None:
-            return False, 0
-            
-        # Apuesta a un número específico
-        if isinstance(self.seleccion_apuesta, int) and resultado_ruleta == self.seleccion_apuesta:
-            return True, 35  # Pago 35:1 para número específico
-            
-        # Apuesta a color
         if self.seleccion_apuesta == "rojo" and ruleta.colores.get(resultado_ruleta) == "rojo":
-            return True, 1  # Pago 1:1 para color
-        elif self.seleccion_apuesta == "negro" and ruleta.colores.get(resultado_ruleta) == "negro":
-            return True, 1  # Pago 1:1 para color
+            return True, 1  # Pago de 1:1
             
         return False, 0  # Perdimos la apuesta
 
@@ -237,7 +224,6 @@ def main():
     parser = argparse.ArgumentParser(description='Simulador de estrategias de apuesta en ruleta')
     parser.add_argument('-c', type=int, default=1, help='Número de corridas')
     parser.add_argument('-n', type=int, default=100, help='Número de tiradas')
-    parser.add_argument('-e', type=str, default=None, help='Número o color específico a apostar (ej: 7, rojo, negro)')
     parser.add_argument('-s', choices=['m', 'd', 'f', 'o'], default='m', help='Estrategia: m (martingala), d (D\'Alembert), f (Fibonacci), o (Paroli)')
     parser.add_argument('-a', choices=['i', 'f'], default='f', help='Tipo de capital: i (infinito), f (finito)')
 
@@ -247,19 +233,7 @@ def main():
     num_corridas = args.c
     num_tiradas = args.n
     capital_infinito = args.a == 'i'
-    
-    # Procesar selección de apuesta
-    seleccion_apuesta = None
-    if args.e:
-        if args.e.lower() == "rojo" or args.e.lower() == "negro":
-            seleccion_apuesta = args.e.lower()
-        elif args.e.isdigit():
-            seleccion_apuesta = int(args.e)
-        else:
-            print(f"Advertencia: Selección de apuesta '{args.e}' no reconocida. Se usará None.")
-    else:
-        # Si no se especifica, usamos "rojo" como valor por defecto
-        seleccion_apuesta = "rojo"
+    seleccion_apuesta = 'rojo'
 
     # Inicializar la ruleta (definimos como global para que esté disponible en los métodos de las estrategias)
     global ruleta
@@ -355,19 +329,6 @@ def main():
     plt.tight_layout()
     plt.savefig(f'flujo_caja_{nombre_estrategia}_{args.a}.png')
     plt.clf()
-
-    # Imprimir resultados
-    # print(f"Estrategia: {nombre_estrategia}")
-    # print(f"Capital: {'Infinito' if capital_infinito else 'Finito'}")
-    # print(f"Capital inicial: {100}")
-    # print(f"Capital final: {historial_capital[-1]}")
-    # print(f"Ganancia/Pérdida: {historial_capital[-1] - 100}")
-    # print(f"Victorias: {estrategia.victorias}")
-    # print(f"Derrotas: {estrategia.derrotas}")
-    # print(f"Ratio victorias/derrotas: {estrategia.victorias/(estrategia.derrotas if estrategia.derrotas > 0 else 1):.2f}")
-
-    # if not capital_infinito and historial_capital[-1] == 0:
-    #     print("¡Banca rota!")
 
 if __name__ == "__main__":
     main()
