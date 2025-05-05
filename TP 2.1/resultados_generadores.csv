@@ -1,0 +1,6 @@
+Generador,Tiempo (s),Test Frecuencia,Test Series,Test Rachas,Test Chi-cuadrado
+GCL (buenos parámetros),0.004546,0.1931 (OK),0.3723 (OK),0.0168 (ERROR),0.1931 (OK)
+GCL (RANDU),0.003056,0.7657 (OK),0.7243 (OK),0.7295 (OK),0.7657 (OK)
+Cuadrados Medios,0.005743,0.0000 (ERROR),0.0000 (ERROR),0.0000 (ERROR),0.0000 (ERROR)
+Python random,0.000707,0.5126 (OK),0.3249 (OK),0.8867 (OK),0.5126 (OK)
+NumPy random,0.000255,0.0752 (OK),0.3240 (OK),0.8095 (OK),0.0752 (OK)
