@@ -1,7 +1,44 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-import math
+from scipy.special import erfc
+import numpy as np
+
+def prueba_frecuencia_monobit(numeros, nivel=0.01):
+    """
+    Prueba de frecuencia (monobit) para evaluar la aleatoriedad de una secuencia binaria.
+    
+    Args:
+        numeros: Lista de bits (0s y 1s)
+        nivel: Nivel de significancia (establecido en 0.01)
+    
+    Returns:
+        dict: Estadístico, p-valor y resultado de la prueba
+    """
+    n = len(numeros)
+    
+    # Convertir a secuencia binaria (0 si < 0.5, 1 si >= 0.5)
+    bits = [1 if x >= 0.5 else 0 for x in numeros]
+    
+    # Transformar 0 → -1, 1 → +1
+    transformada = [1 if bit == 1 else -1 for bit in bits]
+    
+    # Calcular S_n y estadístico S
+    S_n = sum(transformada)
+    S = S_n / np.sqrt(n)
+    
+    # Calcular p-valor usando función de error complementaria
+    p_valor = erfc(abs(S) / np.sqrt(2))
+    
+    # Evaluar si pasa la prueba
+    resultado = "OK" if p_valor > nivel else "ERROR"
+    
+    return {
+        "estadistico": S,
+        "p_valor": p_valor,
+        "resultado": resultado
+    }
+
 
 def prueba_frecuencia(numeros, bins=10, nivel=0.05):
     """
@@ -225,6 +262,7 @@ if __name__ == "__main__":
     print("Prueba de series:", prueba_series(numeros))
     print("Prueba de rachas:", prueba_rachas(numeros))
     print("Prueba chi-cuadrado:", prueba_chi_cuadrado(numeros))
+    print("Prueba de monobit:", prueba_frecuencia_monobit(numeros))
     
     # Generar gráficos
     graficar_distribucion(numeros, "Python Random")

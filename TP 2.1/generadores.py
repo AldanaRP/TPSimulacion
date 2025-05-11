@@ -1,8 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import random
-import math
-
 class GeneradorGCL:
     """
     Generador Congruencial Lineal (GCL)
@@ -133,12 +128,12 @@ if __name__ == "__main__":
     print(numeros_gcl)
     
     # Parámetros para el generador de cuadrados medios
-    semilla_cuadrados = 1234
+    semilla_cuadrados = 9731
     
     # Crear instancia del generador de cuadrados medios
     cuadrados = GeneradorCuadrados(semilla_cuadrados)
     
     # Generar 10 números pseudoaleatorios
-    numeros_cuadrados = cuadrados.generar_secuencia(10)
+    numeros_cuadrados = cuadrados.generar_secuencia(10000)
     print("\nNúmeros generados por el método de cuadrados medios:")
     print(numeros_cuadrados)

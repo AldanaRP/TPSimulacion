@@ -14,13 +14,22 @@ from pruebas import (
     prueba_series, 
     prueba_rachas, 
     prueba_chi_cuadrado,
+    prueba_frecuencia_monobit,
     graficar_distribucion,
     graficar_series
 )
 
+def cargar_numeros_desde_csv(archivo_csv="random_org_numeros.csv"):
+    """Carga los números aleatorios desde un archivo CSV"""
+    try:
+        df = pd.read_csv(archivo_csv, header=None)
+        return df[0].tolist()
+    except FileNotFoundError:
+        raise Exception(f"El archivo {archivo_csv} no se encuentra.")
+
 def generar_numeros_python(n):
     """Genera n números aleatorios usando el generador de Python"""
-    return [random.random() for _ in range(n)]
+    return list(random.random() for _ in range(n))
 
 def generar_numeros_numpy(n):
     """Genera n números aleatorios usando NumPy"""
@@ -55,6 +64,7 @@ def ejecutar_pruebas(generador, nombre, n, bins=20):
         tiempo = time.time() - inicio
     
     # Realizar pruebas
+    resultado_monobit = prueba_frecuencia_monobit(numeros)
     resultado_frecuencia = prueba_frecuencia(numeros, bins=bins)
     resultado_series = prueba_series(numeros, bins=bins)
     resultado_rachas = prueba_rachas(numeros)
@@ -67,6 +77,7 @@ def ejecutar_pruebas(generador, nombre, n, bins=20):
     return {
         "nombre": nombre,
         "tiempo": tiempo,
+        "monobit": resultado_monobit,
         "frecuencia": resultado_frecuencia,
         "series": resultado_series,
         "rachas": resultado_rachas,
@@ -87,15 +98,22 @@ def comparar_generadores(n=10000, bins=20):
     # Crear generadores
     gcl_1 = GeneradorGCL(semilla=12345, a=1664525, c=1013904223, m=2**32)  # Parámetros buenos
     gcl_2 = GeneradorGCL(semilla=12345, a=65539, c=0, m=2**31)  # RANDU (parámetros malos)
-    cuadrados = GeneradorCuadrados(semilla=1234, digitos=4)
+    cuadrados = GeneradorCuadrados(semilla=9731, digitos=4) # Semilla que no decae a cero, repite valores
+
+    try:
+        numeros_random_org = cargar_numeros_desde_csv()
+    except Exception as e:
+        print(e)
+        return pd.DataFrame()
     
     # Lista de generadores a comparar
     generadores = [
+        (lambda n: numeros_random_org, "Random_org"),
         (gcl_1, "GCL (buenos parámetros)"),
         (gcl_2, "GCL (RANDU)"),
         (cuadrados, "Cuadrados Medios"),
-        (generar_numeros_python, "Python random"),
-        (generar_numeros_numpy, "NumPy random")
+        (generar_numeros_python, "Python_random"),
+        (generar_numeros_numpy, "NumPy_random")
     ]
     
     # Ejecutar pruebas para cada generador
@@ -110,6 +128,7 @@ def comparar_generadores(n=10000, bins=20):
         fila = [
             res["nombre"],
             f"{res['tiempo']:.6f}",
+            f"{res['monobit']['p_valor']:.4f} ({res['monobit']['resultado']})",
             f"{res['frecuencia']['p_valor']:.4f} ({res['frecuencia']['resultado']})",
             f"{res['series']['p_valor']:.4f} ({res['series']['resultado']})",
             f"{res['rachas']['p_valor']:.4f} ({res['rachas']['resultado']})",
@@ -123,6 +142,7 @@ def comparar_generadores(n=10000, bins=20):
         columns=[
             "Generador", 
             "Tiempo (s)", 
+            "Test Monobit",
             "Test Frecuencia", 
             "Test Series", 
             "Test Rachas", 
@@ -160,7 +180,7 @@ def graficar_comparacion_3d(n=1000):
     ternas_python = np.array(ternas_python)
     
     # Crear gráfico 3D
-    fig = plt.figure(figsize=(15, 5))
+    fig = plt.figure(figsize=(16, 6))
     
     # GCL bueno
     ax1 = fig.add_subplot(131, projection='3d')
@@ -193,18 +213,15 @@ def graficar_comparacion_3d(n=1000):
 if __name__ == "__main__":
     print("Comparando generadores pseudoaleatorios...")
     
-    # Comparar generadores con 10,000 números
-    df_resultados = comparar_generadores(n=10000, bins=20)
+    # Comparar generadores
+    df_resultados = comparar_generadores(n=50000, bins=20)
     
-    # Mostrar resultados
     print("\nResultados de las pruebas:")
     print(tabulate(df_resultados, headers=df_resultados.columns, tablefmt="grid"))
     
-    # Guardar resultados en CSV
     df_resultados.to_csv("resultados_generadores.csv", index=False)
     
-    # Generar visualización 3D
     print("\nGenerando visualización 3D...")
-    graficar_comparacion_3d(n=1000)
+    graficar_comparacion_3d(n=10000)
     
     print("\nGeneración completa. Los resultados han sido guardados en archivos.")
