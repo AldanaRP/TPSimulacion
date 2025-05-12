@@ -228,7 +228,7 @@ def graficar_distribucion(numeros, generador_nombre, bins=20):
 
 def graficar_series(numeros, generador_nombre):
     """
-    Crea gráficos de dispersión, de puntos y de correlacion
+    Crea gráficos de dispersión, de puntos y de autocorrelacion
     
     Args:
         numeros: Lista de números aleatorios/pseudoaleatorios en [0,1)
