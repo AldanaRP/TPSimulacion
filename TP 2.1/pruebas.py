@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from scipy.special import erfc
 import numpy as np
+import statsmodels.api as sm
 
 def prueba_frecuencia_monobit(numeros, nivel=0.01):
     """
@@ -222,20 +223,34 @@ def graficar_distribucion(numeros, generador_nombre, bins=20):
     plt.xlabel('Valor')
     plt.ylabel('Frecuencia')
     plt.grid(True, alpha=0.3)
-    plt.savefig(f'distribucion_{generador_nombre}.png')
+    plt.savefig(f'./TP 2.1/distribucion_{generador_nombre}.png')
     plt.close()
 
-def graficar_series(numeros, generador_nombre, bins=20):
+def graficar_series(numeros, generador_nombre):
     """
-    Crea un gráfico de dispersión para visualizar pares consecutivos.
+    Crea gráficos de dispersión, de puntos y de correlacion
     
     Args:
-        numeros: Lista de números pseudoaleatorios en [0,1)
+        numeros: Lista de números aleatorios/pseudoaleatorios en [0,1)
         generador_nombre: Nombre del generador
-        bins: Número de intervalos para la densidad
     """
+
+    if generador_nombre == "Cuadrados Medios":
+
+        x = list(range(len(numeros)))
+        y = numeros
+
+        plt.figure(figsize=(8, 8))
+        plt.title(f'Plot - {generador_nombre}')
+        plt.plot(x, y, 'o')
+        plt.xlabel('Índice')
+        plt.ylabel('Valor')
+        plt.grid(True, alpha=0.3)
+        plt.savefig(f'./TP 2.1/plot_{generador_nombre}.png')
+        plt.close()
+
     x = numeros[:-1]  # Todos menos el último
-    y = numeros[1:]   # Todos menos el primero
+    y = numeros[1:]   # Todos menos el primero    
     
     plt.figure(figsize=(8, 8))
     plt.scatter(x, y, alpha=0.5, s=5)
@@ -245,7 +260,12 @@ def graficar_series(numeros, generador_nombre, bins=20):
     plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.grid(True, alpha=0.3)
-    plt.savefig(f'series_{generador_nombre}.png')
+    plt.savefig(f'./TP 2.1/series_{generador_nombre}.png')
+    plt.close()
+
+    sm.graphics.tsa.plot_acf(numeros, lags=100, alpha=0.05, zero=False)
+    plt.title(f"Autocorrelacion - {generador_nombre}")
+    plt.savefig(f"./TP 2.1/autocorrelacion_{generador_nombre}.png")
     plt.close()
 
 if __name__ == "__main__":

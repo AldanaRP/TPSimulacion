@@ -1,7 +1,7 @@
 Generador,Tiempo (s),Test Monobit,Test Frecuencia,Test Series,Test Rachas,Test Chi-cuadrado
-Random_org,0.000000,0.2912 (OK),0.4160 (OK),0.5653 (OK),0.6137 (OK),0.4160 (OK)
-GCL (buenos parámetros),0.011685,0.6939 (OK),0.3448 (OK),0.6287 (OK),0.1216 (OK),0.3448 (OK)
-GCL (RANDU),0.010960,0.4798 (OK),0.8423 (OK),0.9888 (OK),0.2703 (OK),0.8423 (OK)
-Cuadrados Medios,0.022656,0.9929 (OK),0.0000 (ERROR),0.0000 (ERROR),0.9857 (OK),0.0000 (ERROR)
-Python_random,0.003525,0.4743 (OK),0.8903 (OK),0.5283 (OK),0.0949 (OK),0.8903 (OK)
-NumPy_random,0.000761,0.5915 (OK),0.7943 (OK),0.0362 (ERROR),0.4479 (OK),0.7943 (OK)
+Random_org,0.000002,0.2912 (OK),0.4160 (OK),0.5653 (OK),0.6137 (OK),0.4160 (OK)
+GCL (buenos parámetros),0.047758,0.6939 (OK),0.3448 (OK),0.6287 (OK),0.1216 (OK),0.3448 (OK)
+GCL (RANDU),0.016825,0.4798 (OK),0.8423 (OK),0.9888 (OK),0.2703 (OK),0.8423 (OK)
+Cuadrados Medios,0.038949,0.9929 (OK),0.0000 (ERROR),0.0000 (ERROR),0.9857 (OK),0.0000 (ERROR)
+Python_random,0.005415,0.7005 (OK),0.6978 (OK),0.5312 (OK),0.6682 (OK),0.6978 (OK)
+NumPy_random,0.001585,0.4910 (OK),0.7774 (OK),0.5515 (OK),0.6150 (OK),0.7774 (OK)

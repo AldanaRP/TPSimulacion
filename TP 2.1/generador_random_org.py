@@ -6,7 +6,7 @@ def descargar_numeros_random_org(
     cantidad_total=50000,
     por_solicitud=10000,
     decimales=5,
-    archivo_csv="random_org_numeros.csv"
+    archivo_csv="./TP 2.1/random_org_numeros.csv"
   ):
 
   url = "https://www.random.org/decimal-fractions/"

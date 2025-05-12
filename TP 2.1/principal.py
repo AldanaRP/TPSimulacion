@@ -19,7 +19,7 @@ from pruebas import (
     graficar_series
 )
 
-def cargar_numeros_desde_csv(archivo_csv="random_org_numeros.csv"):
+def cargar_numeros_desde_csv(archivo_csv="./TP 2.1/random_org_numeros.csv"):
     """Carga los números aleatorios desde un archivo CSV"""
     try:
         df = pd.read_csv(archivo_csv, header=None)
@@ -72,7 +72,7 @@ def ejecutar_pruebas(generador, nombre, n, bins=20):
     
     # Generar gráficos
     graficar_distribucion(numeros, nombre, bins=bins)
-    graficar_series(numeros, nombre, bins=bins)
+    graficar_series(numeros, nombre)
     
     return {
         "nombre": nombre,
@@ -207,7 +207,7 @@ def graficar_comparacion_3d(n=1000):
     ax3.set_zlabel('r_{i+2}')
     
     plt.tight_layout()
-    plt.savefig('comparacion_3d.png', dpi=150)
+    plt.savefig('./TP 2.1/comparacion_3d.png', dpi=150)
     plt.close()
 
 if __name__ == "__main__":
@@ -219,7 +219,7 @@ if __name__ == "__main__":
     print("\nResultados de las pruebas:")
     print(tabulate(df_resultados, headers=df_resultados.columns, tablefmt="grid"))
     
-    df_resultados.to_csv("resultados_generadores.csv", index=False)
+    df_resultados.to_csv("./TP 2.1/resultados_generadores.csv", index=False)
     
     print("\nGenerando visualización 3D...")
     graficar_comparacion_3d(n=10000)
