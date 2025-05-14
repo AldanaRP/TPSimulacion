@@ -19,6 +19,8 @@
 \usepackage{microtype}      
 \usepackage{lipsum}
 \usepackage{amsmath}
+\usepackage[margin=1in]{geometry}
+\usepackage{multicol}
 \graphicspath{ {./images/} }
 \renewcommand{\refname}{Referencias}
 \usepackage{caption}
@@ -62,9 +64,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-El siguiente documento tiene por objetivo detallar el trabajo de clase que debe realizarse para
-introducirnos en uno de los elementos fundamentales para gran parte de las simulaciones, esto son
-los generadores de números pseudoaleatorios.
+El objetivo del siguiente documento es mostrar los diferentes generadores de números, diferenciando los aleatorios de los pseudoaleatorios, para estudiar los comportamientos de cada uno de ellos. Se pretende analizar cuáles son más competentes y cuáles conviene evitar.
 \end{abstract}
 
 \keywords{Simulación \and Generadores de numeros \and Análisis Estadístico \and Numeros aleatorios \and Numeros pseudoaleatorios }
@@ -78,7 +78,7 @@ La aleatoriedad se entiende como un proceso en el cual el resultado es completam
 
 Los números completamente aleatorios (no
 determinísticos) son fáciles de imaginar conceptualmente, por ejemplo podemos imaginar
-lanzar una moneda, lanzar un dadoo una lotería.
+lanzar una moneda, lanzar un dado, una lotería.
 En general los números aleatorios se basan en alguna fuente de aleatoreidad física que
 puede ser teóricamente impredecible (cuántica) o prácticamente impredecible (caótica). 
 La desventaja de éstos métodos es que son costosos, tardados y no reproducibles.
@@ -86,13 +86,9 @@ La desventaja de éstos métodos es que son costosos, tardados y no reproducible
 \subsection{Generadores de números pseudoaleatorios}
 
 Los números pseudoaleatorios se generan de manera
-secuencial con un algoritmo determinístico, formalmente se definen por:
-Función de inicialización. Recibe un número (la semilla) y pone al generador en su estado inicial.
-Función de transición. Transforma el estado del generador.
-Función de salidas. Transforma el estado para producir un número fijo de bits (0 ó 1).
-Una sucesión de bits pseudoaleatorios se obtiene definiendo la semilla y llamando repetidamente la función de transición y la función de salidas.
-
-Esto implica, entre otras cosas, que una sucesión de números pseudoaletorios esta completamente determinada por la semilla.
+secuencial con un algoritmo determinístico. Para generarlos se utiliza la función de inicialización, que es un proceso que establece el estado inicial del generador de números pseudoaleatorios. Recibe un número (la semilla) y pone al generador en su estado inicial.
+Luego hace uso de la funcion de transición, que transforma el estado del generador. Y por ultimo utiliza la función de salidas, que transforma el estado para producir un número fijo de bits (0 ó 1).
+Es decir, una sucesión de bits pseudoaleatorios se obtiene definiendo la semilla y llamando repetidamente la función de transición y la función de salidas. Si se usa la misma semilla, se puede reproducir el resultado.
 
 \subsubsection{Método de los cuadrados}
 
@@ -113,15 +109,15 @@ A inicios de 1950s se exploró el método y se propusieron mejoras, por ejemplo 
 semillas de 38 bits (usaba sistema binario), además la secuencia de Metrópolis mostraba propiedades deseables. No obstante, el método del valor medio no es considerado un método bueno por lo común de los ciclos cortos.
 
 \subsubsection{RANDU}
-RANDU fue generador de números aleatorios ampliamente utilizado en los 60 ́s y 70 ́s, se
-define como:
+RANDU fue un generador de números pseudoaleatorios ampliamente utilizado en la década de 1960, especialmente en sistemas IBM. Su implementación era simple y rápida, basada en el método congruencial lineal, con la fórmula:
 
 \begin{equation}
     X_{n+1} = (2^{16} + 3)X_n mod(2^{31})
 \end{equation}
 
-A primera vista las sucesiones se asemejan a una uniforme, sin embargo, cuando se grafican
-ternas emergen patrones no deseados.
+Este algoritmo parece generar números aleatorios al principio, pero tiene fallas serias que lo hacen inadecuado para la mayoría de aplicaciones científicas o estadísticas rigurosas.
+
+Una de las principales críticas a RANDU es su mala distribución en espacios multidimensionales. 
 
 \subsubsection{GCL}
 
@@ -161,7 +157,7 @@ El módulo random es una de las bibliotecas estándar de Python para la generaci
 
 Por otro lado, la biblioteca NumPy, orientada al cálculo numérico de alto rendimiento, ofrece un submódulo llamado numpy.random que permite generar números pseudoaleatorios de manera más eficiente y con mayor variedad de distribuciones. A diferencia del módulo estándar random, numpy.random está optimizado para trabajar con arrays y operaciones vectorizadas, lo cual lo hace ideal para aplicaciones científicas, análisis de datos y simulaciones a gran escala.
 
-En este trabajo hacemos uso de ambos y mostramos los diferentes resultados. Veremos cuál es más beneficioso para simulaciones, advirtiendo que numPy está optimizado para operar con estructuras de datos más complejas y proporciona una amplia variedad de distribuciones estadísticas, mientras que random opera de manera mas simple y estandar.
+En este trabajo hacemos uso de ambos y mostramos los diferentes resultados. Veremos cuál es más beneficioso para simulaciones, advirtiendo que NumPy está optimizado para operar con estructuras de datos más complejas y proporciona una amplia variedad de distribuciones estadísticas, mientras que random opera de manera mas simple y estandar.
       
 \section{Aplicacion de generadores}
 A continuación presentaremos las distintas simulaciones, con distintos metodos y generadores para analizar sus diversos resultados.
@@ -169,38 +165,43 @@ A continuación presentaremos las distintas simulaciones, con distintos metodos 
 \subsection{Histogramas de Distribución}
 
 \subsubsection{Distribución Ideal}
-En un generador pseudoaleatorio de alta calidad, el histograma debería mostrar una distribución uniforme, con aproximadamente la misma cantidad de valores en cada intervalo (bin).
+Se espera que las barras tengan alturas similares a lo largo de todo el rango [0,1), lo cual refleja una distribución uniforme. Una distribución de este tipo es la ideal porque implica que todos los subintervalos del rango tienen la misma probabilidad de contener un número generado. En otras palabras, no hay concentraciones ni vacíos: los valores están repartidos de forma equilibrada. Esto sugiere que el generador está funcionando correctamente, ya que no favorece ningún segmento del intervalo. Cuando además las pruebas estadísticas —como la de chi-cuadrado o la de frecuencia— dan resultados positivos, se obtiene una validación numérica que respalda lo observado visualmente en el histograma.
+
+
+
+\newpage
 
 \textbf{GCL con Buenos Parámetros}
 
-Interpretación: Un generador bien parametrizado distribuye los valores de forma equilibrada, lo que indica buena cobertura del espacio. La uniformidad del histograma, junto con los buenos resultados en las pruebas estadísticas, demuestra que este generador es confiable para simulaciones.
+Un generador bien parametrizado distribuye los valores de forma equilibrada, lo que indica buena cobertura del espacio. La uniformidad del histograma, junto con los buenos resultados en las pruebas estadísticas, demuestra que este generador es confiable para simulaciones.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/distribucion_GCL (buenos parámetros).png}
-\caption{------}
+\includegraphics[width=0.5\textwidth]{Imagenes/distribucion_GCL (buenos parámetros).png}
+\caption{Histograma con GCL con buenos parámetros.}
 \end{figure}
+\raggedbottom
 
 \textbf{Cuadrados Medios}
 
-Aspecto esperado: Barras de altura similar a lo largo de todo el rango [0,1)
-Interpretación: Un histograma uniforme indica que el generador está produciendo números que cubren todo el espacio de manera equilibrada. Si las pruebas estadísticas (chi-cuadrado, frecuencia) son positivas, esto confirma numéricamente lo que vemos visualmente.
+Se espera que las barras tengan una altura similar a lo largo de todo el rango [0,1). 
+Un histograma uniforme indica que el generador está produciendo números que cubren todo el espacio de manera equilibrada. Si las pruebas estadísticas (chi-cuadrado, frecuencia) son positivas, esto confirma numéricamente lo que vemos visualmente en la siguiente figura.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/distribucion_Cuadrados Medios.png}
-\caption{------}
+\includegraphics[width=0.5\textwidth]{Imagenes/distribucion_Cuadrados Medios.png}
+\caption{Histograma con Cuadrados Medios.}
 \end{figure}
 
 \textbf{GCL tipo RANDU}
 
-Aspecto esperado: Puede mostrar cierta uniformidad en una dimensión, pero las pruebas multidimensionales fallarán
-Interpretación: El problema de RANDU no es evidente en un histograma unidimensional, lo que demuestra que las pruebas visuales unidimensionales son insuficientes para evaluar la calidad de un generador.
+Puede mostrar cierta uniformidad en una dimensión, pero las pruebas multidimensionales fallarán
+El problema de RANDU no es evidente en un histograma unidimensional, lo que demuestra que las pruebas visuales unidimensionales son insuficientes para evaluar la calidad de un generador.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/distribucion_GCL (RANDU).png}
-\caption{------}
+\includegraphics[width=0.5\textwidth]{Imagenes/distribucion_GCL (RANDU).png}
+\caption{Histograma con GCL tipo RANDU.}
 \end{figure}
 
 \textbf{NumPy Random}
@@ -209,8 +210,8 @@ Distribución muy cercana a una uniforme ideal. Esto confirma que NumPy utiliza 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/distribucion_NumPy_random.png}
-\caption{------}
+\includegraphics[width=0.5\textwidth]{Imagenes/distribucion_NumPy_random.png}
+\caption{Histograma con NumPy Random.}
 \end{figure}
 
 \textbf{Python Random}
@@ -219,54 +220,52 @@ Muestra una excelente cobertura del espacio [0,1). Es un generador robusto, adec
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/distribucion_Python_random.png}
-\caption{------}
+\includegraphics[width=0.5\textwidth]{Imagenes/distribucion_Python_random.png}
+\caption{Histograma con Python Random.}
 \end{figure}
 
+\newpage
 \textbf{Random.org}
 
 Como se trata de números aleatorios obtenidos por fenómenos físicos reales, es lógico que su distribución sea excelente. Esta fuente es útil si se requiere aleatoriedad real, aunque su uso depende de conectividad externa.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/distribucion_Random_org.png}
-\caption{------}
+\includegraphics[width=0.5\textwidth]{Imagenes/distribucion_Random_org.png}
+\caption{Histograma con Random.org.}
 \end{figure}
 
 \subsubsection{Gráficos de Series (Dispersión 2D)}
 Estos gráficos muestran pares consecutivos de valores (ri, ri+1).
-Interpretación Ideal
-En un buen generador, los puntos deberían cubrir uniformemente el plano unitario [0,1) × [0,1) sin mostrar patrones, rayas, rejillas o agrupaciones.
+Como interpretación ideal observamos que, en un buen generador, los puntos deberían cubrir uniformemente el plano unitario [0,1) × [0,1) sin mostrar patrones, rayas, rejillas o agrupaciones.
 Interpretación por Generador
 GCL con Buenos Parámetros
 
-Aspecto esperado: Nube de puntos uniforme que cubre todo el plano
-Interpretación: No hay correlación visible entre valores consecutivos, lo que indica buena independencia estadística.
+En el gráfico se espera ver una nube de puntos uniforme que cubre todo el plano
+No hay correlación visible entre valores consecutivos, lo que indica buena independencia estadística.
 
 \textbf{GCL tipo RANDU}
 
-Aspecto esperado: Puede verse relativamente uniforme en 2D (aunque en 3D mostrará problemas severos)
-Interpretación: El RANDU es famoso porque sus defectos no son evidentes en pruebas bidimensionales, pero son catastróficos en tres dimensiones.
+El aspecto esperado es una distribución que puede parecer relativamente uniforme en dos dimensiones, aunque en tres dimensiones presenta problemas severos. El generador RANDU es conocido precisamente porque sus defectos no se evidencian fácilmente en pruebas bidimensionales, pero resultan catastróficos cuando se analiza en tres dimensiones.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/series_GCL (RANDU).png}
-\caption{GCL (RANDU)}
+\includegraphics[width=0.5\textwidth]{Imagenes/series_GCL (RANDU).png}
+\caption{Gráfico de Dispersión GCL (RANDU).}
 \end{figure}
 
 \textbf{Cuadrados Medios}
 
-Aspecto esperado: Puntos agrupados cerca del origen o formando patrones muy evidentes
+El aspecto esperado es que los puntos se agrupen cerca del origen o formen patrones muy evidentes. Esto indica una alta correlación entre valores consecutivos, lo cual es una señal clara de que el generador tiene una calidad deficiente.
 
-Interpretación: Alta correlación entre valores consecutivos, lo que es una señal clara de pobre calidad del generador.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/series_Cuadrados Medios.png}
-\caption{Cuadrados Medios}
+\includegraphics[width=0.5\textwidth]{Imagenes/series_Cuadrados Medios.png}
+\caption{Gráfico de Dispersión Cuadrados Medios.}
 \end{figure}
 \textbf{Python Random | NumPy}
 
-Aspecto esperado: Distribución uniforme sin patrones visibles
-Interpretación: Ausencia de correlación entre valores consecutivos, indicando buena calidad.
+El aspecto esperado es una distribución uniforme sin patrones visibles.
+Se aprecia una ausencia de correlación entre valores consecutivos, indicando buena calidad.
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.45\textwidth}
@@ -278,38 +277,39 @@ Interpretación: Ausencia de correlación entre valores consecutivos, indicando 
     \includegraphics[width=\textwidth]{Imagenes/series_NumPy_random.png}
     \caption{NumPy Random}
 \end{subfigure}
-\caption{Figura X: Gráficos de autocorrelación – Python y NumPy}
+\caption{Gráfico de Dispersión de Python y NumPy.}
 \end{figure}
 
 \subsubsection{Visualizaciones 3D}
 Estos gráficos muestran ternas consecutivas de valores (ri, ri+1, ri+2).
-Interpretación Ideal
-Los puntos deberían distribuirse uniformemente en el cubo unitario sin formar patrones, planos o estructuras.
-Interpretación por Generador
-\textbf{GCL con Buenos Parámetros}
+Como interpretación ideal apreciaríamos que los puntos deberían distribuirse uniformemente en el cubo unitario sin formar patrones, planos o estructuras.
+A continuacion veremos las interpretaciones de cada generador.
 
-Aspecto esperado: Nube de puntos tridimensional uniforme
-Interpretación: Buena independencia estadística incluso cuando se consideran tres valores consecutivos.
-
-\textbf{GCL tipo RANDU}
-
-Aspecto esperado: Puntos alineados en planos paralelos muy evidentes
-Interpretación: Este es el famoso defecto del RANDU. Los puntos caen en exactamente 15 planos en el espacio 3D, lo que demuestra una correlación severa y predecible entre valores consecutivos. Es un ejemplo perfecto de cómo un generador puede pasar pruebas simples pero fallar espectacularmente en pruebas más sofisticadas.
-
-\textbf{Cuadrados Medios}
-
-Aspecto esperado: Concentración de puntos en una región pequeña o formando estructuras muy regulares
-Interpretación: Alta correlación multidimensional, confirmando la mala calidad del generador.
-
-\textbf{Python Random/NumPy}
-
-Aspecto esperado: Distribución uniforme en todo el cubo
-Interpretación: Los generadores modernos han sido diseñados específicamente para superar pruebas multidimensionales exigentes.
+\noindent
+\begin{minipage}[t]{0.32\textwidth}
+\textbf{GCL con Buenos Parámetros}  \\
+El aspecto esperado es una nube de puntos tridimensional uniforme.
+Se interpreta una buena independencia estadística incluso cuando se consideran tres valores consecutivos.
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.32\textwidth}
+\textbf{GCL tipo RANDU}  \\
+El aspecto esperado es que la alineación de puntos en planos paralelos sea muy evidentes. Esta característica es la famosa falla del RANDU, donde los puntos se distribuyen en exactamente 15 planos dentro del espacio tridimensional, lo que revela una correlación grave y predecible entre valores sucesivos. 
+\end{minipage}
+\hfill
+%\textbf{Cuadrados Medios}
+%Aspecto esperado: Concentración de puntos en una región pequeña o formando estructuras muy regulares
+%Interpretación: Alta correlación multidimensional, confirmando la mala calidad del generador.
+\begin{minipage}[t]{0.32\textwidth}
+\textbf{Python Random/NumPy}  \\
+Se espera un aspecto de distribución uniforme en todo el cubo.
+Los generadores modernos han sido diseñados específicamente para superar pruebas multidimensionales exigentes.
+\end{minipage}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{Imagenes/comparacion_3d.png}
-\caption{-----}
+\includegraphics[width=1\textwidth]{Imagenes/comparacion_3d.png}
+\caption{Gráficos de dispersión tridimensionales de GCL con buenos parámetros, GCL RANDU con malos parámetros y Python Random.}
 \end{figure}
 
 \section{Autocorrelación y Evolución Temporal}
@@ -318,29 +318,45 @@ En esta sección analizamos la autocorrelación de los números generados por ca
 
 \subsection{Autocorrelación}
 
-La prueba de autocorrelación mide el grado de dependencia lineal entre un valor y los valores anteriores de la secuencia. En un buen generador, se espera que las correlaciones sean cercanas a cero (excepto en el desfase cero).
+La prueba de autocorrelación evalúa la dependencia lineal entre un valor específico en una secuencia y sus valores precedentes. En esencia, mide si un número en la secuencia está correlacionado con los números que lo anteceden en diferentes desfases o distancias.
 
+En un generador de números aleatorios de buena calidad, el objetivo es que esta autocorrelación sea lo más cercana a cero posible para todos los desfases distintos de cero. Esto indica que cada número generado es independiente de los anteriores, una propiedad fundamental de la aleatoriedad.
+
+La única excepción esperada es el "desfase cero", que representa la correlación de un valor consigo mismo, y que siempre será perfectamente 1.
+
+\newpage
+
+\begin{multicols}{2}
+\setlength{\floatsep}{0pt}
+\setlength{\textfloatsep}{0pt}
+\setlength{\intextsep}{0pt}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0pt}
 \textbf{Cuadrados Medios:} Presenta valores de autocorrelación extremos, alternando entre 1 y -1, evidenciando una fuerte dependencia y comportamiento cíclico. Esto lo descalifica como un generador confiable.
+
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/autocorrelacion_Cuadrados Medios.png}
+\includegraphics[width=0.4\textwidth]{Imagenes/autocorrelacion_Cuadrados Medios.png}
 \caption{Autocorrelación – Cuadrados Medios}
 \end{figure}
+
 
 \textbf{GCL (buenos parámetros):} Muestra autocorrelaciones cercanas a cero, lo cual es deseable y refuerza su idoneidad para simulación.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/autocorrelacion_GCL (buenos parámetros).png}
+\includegraphics[width=0.4\textwidth]{Imagenes/autocorrelacion_GCL_(buenos parámetros).png}
 \caption{Autocorrelación – GCL (buenos parámetros)}
 \end{figure}
+
+
 
 \textbf{GCL (RANDU):} Aunque las correlaciones no son tan extremas como en Cuadrados Medios, mantiene valores bajos que podrían pasar desapercibidos en esta prueba, pero se evidenciarán problemas en otras dimensiones.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/autocorrelacion_GCL (RANDU).png}
+\includegraphics[width=0.4\textwidth]{Imagenes/autocorrelacion_GCL (RANDU).png}
 \caption{Autocorrelación – GCL (RANDU)}
 \end{figure}
 
@@ -348,7 +364,7 @@ La prueba de autocorrelación mide el grado de dependencia lineal entre un valor
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/autocorrelacion_Python_random.png}
+\includegraphics[width=0.4\textwidth]{Imagenes/autocorrelacion_Python_random.png}
 \caption{Autocorrelación – Python Random}
 \end{figure}
 
@@ -356,7 +372,7 @@ La prueba de autocorrelación mide el grado de dependencia lineal entre un valor
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/autocorrelacion_NumPy_random.png}
+\includegraphics[width=0.4\textwidth]{Imagenes/autocorrelacion_NumPy_random.png}
 \caption{Autocorrelación – NumPy Random}
 \end{figure}
 
@@ -364,9 +380,10 @@ La prueba de autocorrelación mide el grado de dependencia lineal entre un valor
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/autocorrelacion_Random_org.png}
+\includegraphics[width=0.4\textwidth]{Imagenes/autocorrelacion_Random_org.png}
 \caption{Autocorrelación – Random.org}
 \end{figure}
+\end{multicols}
 
 \subsection{Evolución Temporal de Cuadrados Medios}
 
@@ -374,17 +391,18 @@ Este gráfico muestra cómo los valores generados por el método de los Cuadrado
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{Imagenes/plot_Cuadrados Medios.png}
+\includegraphics[width=0.5\textwidth]{Imagenes/plot_Cuadrados Medios.png}
 \caption{Evolución del valor en función del índice para Cuadrados Medios}
 \end{figure}
 
 \section{Conclusión}
 El análisis realizado evidencia que no todos los generadores de números pseudoaleatorios son adecuados para simulaciones. Métodos históricos como Cuadrados Medios y el GCL con parámetros tipo RANDU presentan comportamientos claramente deficientes, los cuales se reflejan tanto en pruebas estadísticas como en gráficos de distribución, series y autocorrelación. Estos generadores no logran reproducir la variabilidad esperada, mostrando patrones, ciclos cortos o concentraciones de valores que comprometen su utilidad en contextos de simulación.
 
-Por el contrario, los generadores modernos como Python random, numpy.random y Random.org mostraron un desempeño robusto, generando secuencias bien distribuidas, sin correlaciones visibles y con una calidad estadística adecuada. Este contraste deja en evidencia por qué los métodos modernos superan ampliamente a los enfoques clásicos.
+Por el contrario, los generadores modernos como Python random, NumPy.random y Random.org mostraron un desempeño robusto, generando secuencias bien distribuidas, sin correlaciones visibles y con una calidad estadística adecuada. Este contraste deja en evidencia por qué los métodos modernos superan ampliamente a los enfoques clásicos.
 
 Además, el caso particular del generador RANDU demuestra la importancia de aplicar pruebas en múltiples dimensiones, ya que algunas deficiencias sólo se manifiestan en contextos tridimensionales. También se destaca la correlación entre los análisis gráficos y las pruebas estadísticas, que deben emplearse de forma complementaria. Por último, incluso dentro de una misma familia de algoritmos, como los GCL, la correcta elección de parámetros es fundamental para garantizar la calidad del generador.
 
+\newpage
 \bibliographystyle{unsrt}  
 \begin{thebibliography}{99}
 
