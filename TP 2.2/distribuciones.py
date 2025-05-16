@@ -114,29 +114,61 @@ def graficar(f : Callable, *args):
 
 if __name__ == "__main__":
 
-  nombre_funcion = "Uniforme"
-  graficar(partial(np.random.uniform, 0, 1))
+  # Distribuciones con los generadores de numpy
 
-  nombre_funcion = "Exponencial"
+  nombre_funcion = "Uniforme_Numpy"
+  graficar(partial(np.random.uniform, 0, 1))
+  
+
+  nombre_funcion = "Exponencial_Numpy"
   graficar(partial(np.random.exponential, 1))
 
-  nombre_funcion = "Gamma"
+  nombre_funcion = "Gamma_Numpy"
   graficar(partial(np.random.gamma, 1, 1)) # mismo comportamiento que la exponencial
 
-  nombre_funcion = "Normal"
+  nombre_funcion = "Normal_Numpy"
   graficar(partial(np.random.normal, 0, 1))
 
-  nombre_funcion = "Pascal"
+  nombre_funcion = "Pascal_Numpy"
   graficar(partial(np.random.negative_binomial, 1, 0.5)) # no se si es correcto
 
-  nombre_funcion = "Binomial"
+  nombre_funcion = "Binomial_Numpy"
   graficar(partial(np.random.binomial, 10, 0.5))
 
-  nombre_funcion = "Hipergeometrica"
+  nombre_funcion = "Hipergeometrica_Numpy"
   graficar(partial(np.random.hypergeometric, 10, 5, 5)) # parecido a la binomial
 
-  nombre_funcion = "Poisson"
+  nombre_funcion = "Poisson_Numpy"
   graficar(partial(np.random.poisson, 1))
 
-  nombre_funcion = "Empirica Discreta"
+  nombre_funcion = "Empirica Discreta_Numpy"
   graficar(partial(np.random.choice, [0, 1, 2, 3, 4], p=[0.1, 0.2, 0.3, 0.2, 0.2])) # esto ni idea
+
+  # Distribuciones con los generadores programados
+
+  nombre_funcion = "Uniforme"
+  graficar(partial(uniforme, 0, 1))
+
+  nombre_funcion = "Exponencial"
+  graficar(partial(exponencial, 1))
+
+  nombre_funcion = "Gamma"
+  graficar(partial(gamma, 1, 1))
+
+  nombre_funcion = "Normal"
+  graficar(partial(normal, 0, 1))
+
+  nombre_funcion = "Pascal"
+  graficar(partial(pascal, 1, 0.5)) # se ve distinta a la de numpy
+
+  nombre_funcion = "Binomial"
+  graficar(partial(binomial, 10, 0.5))
+
+  nombre_funcion = "Hipergeometrica"
+  graficar(partial(hipergeometrica, 10, 5, 5)) # se ve distinta a la de numpy
+
+  nombre_funcion = "Poisson"
+  graficar(partial(poisson, 1))
+
+  nombre_funcion = "Empirica Discreta"
+  graficar(partial(empirica_discreta, [0, 1, 2, 3, 4], p=[0.1, 0.2, 0.3, 0.2, 0.2])) # esta falla, se tienen que arreglar los argumentos
