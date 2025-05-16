@@ -133,10 +133,10 @@ if __name__ == "__main__":
   graficar(partial(np.random.binomial, 10, 0.5))
 
   nombre_funcion = "Hipergeometrica"
-  graficar(partial(np.random.hypergeometric, 10, 5, 5)) # mismo comportamiento que la binomial
+  graficar(partial(np.random.hypergeometric, 10, 5, 5)) # parecido a la binomial
 
   nombre_funcion = "Poisson"
   graficar(partial(np.random.poisson, 1))
 
   nombre_funcion = "Empirica Discreta"
-  graficar(partial(np.random.choice, [0, 1, 2, 3, 4], p=[0.1, 0.2, 0.3, 0.2, 0.2]))
+  graficar(partial(np.random.choice, [0, 1, 2, 3, 4], p=[0.1, 0.2, 0.3, 0.2, 0.2])) # esto ni idea
