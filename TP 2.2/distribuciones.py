@@ -1,174 +1,112 @@
-""" 
-  Distribuciones a desarrollar
-  - Uniforme
-  - Exponencial
-  - Gamma
-  - Normal
-  - Pascal
-  - Binomial
-  - Hipergeometrica
-  - Poisson
-  - Empirica Discreta 
+"""
+Distribuciones a desarrollar y testear:
+- Uniforme
+- Exponencial
+- Gamma
+- Normal
+- Pascal (Binomial Negativa)
+- Binomial
+- Hipergeométrica
+- Poisson
+- Empírica Discreta
 """
 
 import random
+import numpy as np
+import matplotlib.pyplot as plt
 from math import log, exp
 from functools import partial
-import numpy as np
 from typing import Callable
-import matplotlib.pyplot as plt
 
+#Generadores Manuales
 def uniforme(a, b):
-  r = random.random()
-  x = a + (b - a) * r
-  return x
+    r = random.random()
+    return a + (b - a) * r
 
-def exponencial(alfa):  #en el libro alfa es EX (que seria?)
-  r = random.random()
-  x = -alfa * log(r)
-  return x
+def exponencial(alfa):
+    r = random.random()
+    return -alfa * log(r)
 
 def gamma(k, alfa):
-  tr = 0.1  #en el libro dice 1.0
-  for i in range(k):
-    r = random.random()
-    tr = tr * r
-  x = -log(tr) / alfa
-  return x
+    tr = 1.0
+    for _ in range(k):
+        tr *= random.random()
+    return -log(tr) / alfa
 
-def normal ( ex, stdx ):
-  sum = 0.0
-  for i in range (12): # el libro pide 12 pero por que ese valor
-    r = random.random()
-    sum = sum + r
-  x = stdx *(sum - 6.0) + ex
-  return x
+def normal(ex, stdx):
+    sum_r = sum(random.random() for _ in range(12))
+    return stdx * (sum_r - 6.0) + ex
 
-def pascal(k ,q):
-  tr = 1.0
-  qr = log(q)
-  for i in range(k):
-    r = random.random()
-    tr = tr * r
-  nx = log(tr) / qr
-  return nx
+def pascal(k, q):
+    tr = 1.0
+    for _ in range(k):
+        tr *= random.random()
+    return log(tr) / log(q)
 
 def binomial(n, p):
-  x = 0.0
-  for i in range(n):
-    r = random.random()
-    if r < p:
-      x = x + 1.0
-  return x
+    return sum(1 for _ in range(n) if random.random() < p)
 
 def hipergeometrica(tn, ns, p):
-  x = 0.0
-  for i in range(ns):
+    x = 0
+    for _ in range(ns):
+        r = random.random()
+        s = 1 if r < p else 0
+        x += s
+        p = (tn * p - s) / (tn - 1)
+        tn -= 1
+    return x
+
+def poisson(lam):
+    x = 0
+    b = exp(-lam)
+    tr = 1.0
+    while tr > b:
+        tr *= random.random()
+        x += 1
+    return x - 1
+
+def empirica_discreta(valores, probas):
     r = random.random()
-    if r < p:
-      s = 1.0
-      x = x + 1.0
-    else:
-      s = 0.0
-    p = (tn * p - s) / (tn - 1.0)
-    tn = tn - 1.0
-  return x
+    acumulada = 0.0
+    for v, p in zip(valores, probas):
+        acumulada += p
+        if r < acumulada:
+            return v
+    return valores[-1]
 
-def poisson(p):
-  x = 0.0
-  b = exp(-p)
-  tr = 1.0
-  r = random.random()
-  tr = tr * r
-  while (tr > b):
-    x= x + 1.0
-    r = random.random()
-    tr = tr * r
-  return x
+def graficar(f: Callable, *args, nombre="Distribucion", bins=50):
+    datos = [f(*args) for _ in range(5000)]
+    plt.hist(datos, bins=bins, density=True, alpha=0.6, color="#DB6DDB", edgecolor='black')
+    plt.title(nombre)
+    plt.xlabel('Valor')
+    plt.ylabel('Densidad')
+    plt.grid(True)
 
-def empirica_discreta(m, n, i, p): #en donde p es una matriz 10x10, x es una lista de 10 elementos
-  x = []
-  for k in range(m):
-    x.append(0.0)
-  for k in range(n):
-    r = random.random()
-    for j in range(m):
-      if (p[i][j] > r):
-        break
-    i = j
-    x[i] = x[i] + 1.0
-  return x
-
-def graficar(f : Callable, *args):
-  y = []
-  for i in range(5000):
-    y.append(f(*args))
-  y.sort()
-
-  plt.hist(y, bins=50, color='#6DAEDB', edgecolor='black')
-  plt.title(f"Distribucion_{nombre_funcion}")
-  plt.xlabel('Valor')
-  plt.ylabel('Frecuencia')
-  plt.savefig(f"./TP 2.2/Distribucion_{nombre_funcion}.png")
-  plt.clf()
+    ruta = f"Distribucion_{nombre}.png"
+    plt.savefig(ruta)
+    print(f"Gráfico guardado en: {ruta}")
+    plt.clf()
 
 if __name__ == "__main__":
 
-  # Distribuciones con los generadores de numpy
+    # Numpy
+    graficar(np.random.uniform, 0, 1, nombre="Uniforme_Numpy")
+    graficar(np.random.exponential, 1, nombre="Exponencial_Numpy")
+    graficar(np.random.gamma, 1, 1, nombre="Gamma_Numpy")
+    graficar(np.random.normal, 0, 1, nombre="Normal_Numpy")
+    graficar(np.random.negative_binomial, 1, 0.5, nombre="Pascal_Numpy")
+    graficar(np.random.binomial, 10, 0.5, nombre="Binomial_Numpy")
+    graficar(np.random.hypergeometric, 10, 5, 5, nombre="Hipergeometrica_Numpy")
+    graficar(np.random.poisson, 1, nombre="Poisson_Numpy")
+    graficar(partial(np.random.choice, [0, 1, 2, 3, 4], p=[0.1, 0.2, 0.3, 0.2, 0.2]), nombre="Empirica_Discreta_Numpy")
 
-  nombre_funcion = "Uniforme_Numpy"
-  graficar(partial(np.random.uniform, 0, 1))
-  
-
-  nombre_funcion = "Exponencial_Numpy"
-  graficar(partial(np.random.exponential, 1))
-
-  nombre_funcion = "Gamma_Numpy"
-  graficar(partial(np.random.gamma, 1, 1)) # mismo comportamiento que la exponencial
-
-  nombre_funcion = "Normal_Numpy"
-  graficar(partial(np.random.normal, 0, 1))
-
-  nombre_funcion = "Pascal_Numpy"
-  graficar(partial(np.random.negative_binomial, 1, 0.5)) # no se si es correcto
-
-  nombre_funcion = "Binomial_Numpy"
-  graficar(partial(np.random.binomial, 10, 0.5))
-
-  nombre_funcion = "Hipergeometrica_Numpy"
-  graficar(partial(np.random.hypergeometric, 10, 5, 5)) # parecido a la binomial
-
-  nombre_funcion = "Poisson_Numpy"
-  graficar(partial(np.random.poisson, 1))
-
-  nombre_funcion = "Empirica Discreta_Numpy"
-  graficar(partial(np.random.choice, [0, 1, 2, 3, 4], p=[0.1, 0.2, 0.3, 0.2, 0.2])) # esto ni idea
-
-  # Distribuciones con los generadores programados
-
-  nombre_funcion = "Uniforme"
-  graficar(partial(uniforme, 0, 1))
-
-  nombre_funcion = "Exponencial"
-  graficar(partial(exponencial, 1))
-
-  nombre_funcion = "Gamma"
-  graficar(partial(gamma, 1, 1))
-
-  nombre_funcion = "Normal"
-  graficar(partial(normal, 0, 1))
-
-  nombre_funcion = "Pascal"
-  graficar(partial(pascal, 1, 0.5)) # se ve distinta a la de numpy
-
-  nombre_funcion = "Binomial"
-  graficar(partial(binomial, 10, 0.5))
-
-  nombre_funcion = "Hipergeometrica"
-  graficar(partial(hipergeometrica, 10, 5, 5)) # se ve distinta a la de numpy
-
-  nombre_funcion = "Poisson"
-  graficar(partial(poisson, 1))
-
-  nombre_funcion = "Empirica Discreta"
-  graficar(partial(empirica_discreta, [0, 1, 2, 3, 4], p=[0.1, 0.2, 0.3, 0.2, 0.2])) # esta falla, se tienen que arreglar los argumentos
+    # Manuales
+    graficar(uniforme, 0, 1, nombre="Uniforme")
+    graficar(exponencial, 1, nombre="Exponencial")
+    graficar(gamma, 2, 1, nombre="Gamma")
+    graficar(normal, 0, 1, nombre="Normal")
+    graficar(pascal, 2, 0.5, nombre="Pascal")
+    graficar(binomial, 10, 0.5, nombre="Binomial")
+    graficar(hipergeometrica, 20, 5, 0.5, nombre="Hipergeometrica")
+    graficar(poisson, 1, nombre="Poisson")
+    graficar(empirica_discreta, [0, 1, 2, 3, 4], [0.1, 0.2, 0.3, 0.2, 0.2], nombre="Empirica_Discreta")
