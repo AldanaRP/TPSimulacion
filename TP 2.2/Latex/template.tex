@@ -65,7 +65,7 @@ El presente trabajo aborda un estudio de diversas distribuciones de probabilidad
  utilizadas en simulaciones. Se realiza una introducción teórica de cada distribución, en la que se
  presentan los parámetros de entrada, la función de probabilidad y gráficas. Para complementar el
  análisis teórico, se programó en Python cada una de las distribuciones estudiadas, con el objetivo de
- generar valores pseudoaleatorios y luego realizar pruebas.
+ generar valores pseudoaleatorios y luego realizar diferentes pruebas.
 \end{abstract}
 
 \section{Introducción}
@@ -99,7 +99,7 @@ El presente trabajo aborda un estudio de diversas distribuciones de probabilidad
 
 \section{Conceptos Teóricos}
 \subsection{Distribución Uniforme}
- La distribución Uniforme continua es una familia de distribuciones de probabilidad aplicables a variables aleatorias continuas. Cada miembro de esta familia presenta la característica de que todos los intervalos de igual longitud dentro de su rango (que va desde un valor mínimo a hasta un valor máximo b) son equiprobables. Es decir, la probabilidad de que una variable aleatoria caiga dentro de cualquier intervalo de igual tamaño es la misma. Los valores de a y b definen el dominio de la distribución Uniforme continua y representan el mínimo y máximo valor posible de la variable
+ La distribución Uniforme continua es una familia de distribuciones de probabilidad aplicables a variables aleatorias continuas. Cada miembro de esta familia presenta la característica de que todos los intervalos de igual longitud dentro de su rango (que va desde un valor mínimo $a$ hasta un valor máximo $b$) son equiprobables. Es decir, la probabilidad de que una variable aleatoria caiga dentro de cualquier intervalo de igual tamaño es la misma. Los valores de $a$ y $b$ definen el dominio de la distribución Uniforme continua y representan el mínimo y máximo valor posible de la variable
  aleatoria, respectivamente.
  La función de densidad definida para la distribución Uniforme está dada por tramos, y se define de la siguiente manera:
     \begin{equation}
@@ -114,7 +114,7 @@ El presente trabajo aborda un estudio de diversas distribuciones de probabilidad
     \caption{ Gráfica de la función de densidad definida para la distribución Uniforme dentro del intervalo [a,b]}
     \label{fig:Distr.Uniforme}
 \end{figure}
-La probabilidad de que una variable aleatoria X tome un valor x puede calcularse matemáticamente utilizando la siguiente función (función de distribución acumulada o CDF):
+La probabilidad de que una variable aleatoria $X$ tome un valor $x$ puede calcularse matemáticamente utilizando la siguiente función (función de distribución acumulada o CDF):
 \begin{equation}
     F(x) = 
     \begin{cases}
@@ -123,7 +123,7 @@ La probabilidad de que una variable aleatoria X tome un valor x puede calcularse
     1, & x \geq b
     \end{cases}
 \end{equation}
-La CDF dela distribución uniforme es una función lineal creciente que va de 0 a 1 a medida que x se mueve desde a hasta b. Para obtener la inversa de la distribución Uniforme, se utiliza la CDF y se resuelve para x en términos de u, donde u es un valor aleatorio generado de una distribución Uniforme estándar (es decir, una distribución Uniforme en el intervalo [0,1]).
+La CDF de la distribución uniforme es una función lineal creciente que va de 0 a 1 a medida que $x$ se mueve desde $a$ hasta $b$. Para obtener la inversa de la distribución Uniforme, se utiliza la CDF y se resuelve para x en términos de $u$, donde $u$ es un valor aleatorio generado de una distribución Uniforme estándar (es decir, una distribución Uniforme en el intervalo [0,1]).
 
 \subsection{Distribución Exponencial}
  La distribución de probabilidad Exponencial es una distribución de probabilidad continua que describe el tiempo entre dos eventos que ocurren de forma aleatoria y que ocurren a una tasa constante en el tiempo. Esta distribución es comúnmente utilizada en estadística, ingeniería, física y otras áreas. La función de densidad de probabilidad de la distribución Exponencial está dada por:
@@ -145,7 +145,7 @@ La CDF dela distribución uniforme es una función lineal creciente que va de 0 
     \caption{Funciones de densidad Exponencial para distintos valores de $\lambda$}
     \label{fig:Dist.Exponencial}
 \end{figure}
-En términos de gráficas, la distribución Exponencial tiene una forma decaimiento exponencial, es decir, la función de densidad de probabilidad disminuye exponencialmente a medida que x aumenta.
+En términos de gráficas, la distribución Exponencial tiene una forma decaimiento exponencial, es decir, la función de densidad de probabilidad disminuye exponencialmente a medida que $x$ aumenta.
 La Media y la Varianza de una distribución Exponencial son:
 \begin{equation}
     \mathbb{E}(X) = \frac{1}{\lambda}
@@ -171,9 +171,9 @@ La función de densidad de probabilidad de la distribución Gamma se define como
     f(x; \alpha, \beta) = \frac{1}{\Gamma(\alpha) \, \beta^\alpha} \, x^{\alpha - 1} e^{-x/\beta}
 \end{equation}
 
-donde x es la variable aleatoria, $\alpha$ y $\beta$ son parámetros de forma y escala, respectivamente, y $\Gamma$ es la función gamma. El parámetro $\alpha$ controla la forma de la distribución Gamma. Cuanto mayor sea el valor de $\alpha$, más sesgada a la derecha será la distribución. Si $\alpha$ es igual a 1, la distribución se convierte en una distribución exponencial.
+donde $x$ es la variable aleatoria, $\alpha$ y $\beta$ son parámetros de forma y escala, respectivamente, y $\Gamma$ es la función gamma. El parámetro $\alpha$ controla la forma de la distribución Gamma. Cuanto mayor sea el valor de $\alpha$, más sesgada a la derecha será la distribución. Si $\alpha$ es igual a 1, la distribución se convierte en una distribución exponencial.
 
- El parámetro $\beta$ controla la escala de la distribución Gamma. Cuanto mayor sea el valor de $\beta$, más se extiende la distribución Gamma sobre el eje x.
+ El parámetro $\beta$ controla la escala de la distribución Gamma. Cuanto mayor sea el valor de $\beta$, más se extiende la distribución Gamma sobre el eje $x$.
  
 \begin{figure}[H]
     \centering
@@ -191,7 +191,7 @@ La Esperanza y la varianza de una distribución Gamma son:
     \mathrm{Var}(X) = \alpha \beta^2
 \end{equation}
 
- La distribución Gamma también tiene una propiedad interesante llamada invariancia de escala. Esto significa que si se multiplica la variable aleatoria X por una constante c, la nueva variable aleatoria cX sigue siendo una distribución Gamma con los parámetros de forma $\alpha$ y escala $\beta$/c. Esta propiedad se puede utilizar para ajustar la distribución Gamma a los datos y obtener los valores de los parámetros.
+ La distribución Gamma también tiene una propiedad interesante llamada invariancia de escala. Esto significa que si se multiplica la variable aleatoria $X$ por una constante $c$, la nueva variable aleatoria $cX$ sigue siendo una distribución Gamma con los parámetros de forma $\alpha$ y escala $\beta$/$c$. Esta propiedad se puede utilizar para ajustar la distribución Gamma a los datos y obtener los valores de los parámetros.
  
  La distribución Gamma tiene aplicaciones en muchas áreas, incluyendo la ingeniería, las ciencias biológicas y la estadística médica.
 
@@ -203,7 +203,7 @@ La función de densidad de probabilidad de la distribución Normal se define com
     f(x; \mu, \sigma) = \frac{1}{\sigma \sqrt{2\pi}} \, e^{-\frac{(x - \mu)^2}{2\sigma^2}}
 \end{equation}
 
- Donde x es la variable aleatoria, µ es la media (o valor esperado) y $\sigma$ es la desviación estándar. La función de densidad de probabilidad tiene una forma de campana simétrica alrededor de la media µ, y la amplitud de la campana está determinada por la desviación estándar $\sigma$. Cuanto mayor sea la desviación estándar, más ancha será la campana. 
+ Donde $x$ es la variable aleatoria, $µ$ es la media (o valor esperado) y $\sigma$ es la desviación estándar. La función de densidad de probabilidad tiene una forma de campana simétrica alrededor de la media $µ$, y la amplitud de la campana está determinada por la desviación estándar $\sigma$. Cuanto mayor sea la desviación estándar, más ancha será la campana. 
  
  La distribución Normal es una distribución paramétrica, lo que significa que sus propiedades estadísticas están completamente determinadas por los valores de sus parámetros. La media y la desviación estándar son importantes en la distribución Normal. La media representa el valor central de la distribución, mientras que la desviación estándar mide la dispersión o variabilidad de la distribución.
  
@@ -223,13 +223,13 @@ La función de densidad de probabilidad de la distribución Normal se define com
 \end{equation}
 
 
-La función de distribución acumulada (CDF) de la distribución normal, F(x), representa la probabilidad de que una variable aleatoria normalmente distribuida tome un valor menor o igual a x. Como no se puede expresar mediante funciones elementales, se utiliza la función error erf, que es una función especial relacionada con la integral de la campana gaussiana. Esta fórmula permite calcular valores acumulados a partir de cualquier media µ y desviación estándar $\sigma$, generalizando así la CDF para cualquier distribución normal.
+La función de distribución acumulada (CDF) de la distribución normal, $F(x)$, representa la probabilidad de que una variable aleatoria normalmente distribuida tome un valor menor o igual a $x$. Como no se puede expresar mediante funciones elementales, se utiliza la función error $erf$, que es una función especial relacionada con la integral de la campana gaussiana. Esta fórmula permite calcular valores acumulados a partir de cualquier media $µ$ y desviación estándar $\sigma$, generalizando así la CDF para cualquier distribución normal.
 
 \subsection{Distribución Pascal}
- Para poder comprender la distribución Pascal primero debemos definir qué entendemos por ensayos Bernoulli. Los ensayos Bernoulli son experimentos que tienen solo dos resultados posibles: éxito o fracaso. La probabilidad de éxito en un ensayo Bernoulli generalmente se denota por p. Por lo tanto, la probabilidad de fracaso es 1 - p. El resultado de cada ensayo Bernoulli es independiente de los resultados de los ensayos anteriores.
+ Para poder comprender la distribución Pascal primero debemos definir qué entendemos por ensayos Bernoulli. Los ensayos Bernoulli son experimentos que tienen solo dos resultados posibles: éxito o fracaso. La probabilidad de éxito en un ensayo Bernoulli generalmente se denota por $p$. Por lo tanto, la probabilidad de fracaso es $1 - p$. El resultado de cada ensayo Bernoulli es independiente de los resultados de los ensayos anteriores.
  La distribución de probabilidad Pascal, también conocida como distribución de probabilidad binomial negativa, es una distribución de probabilidad discreta que describe el número de ensayos Bernoulli independientes e idénticos necesarios para obtener un número específico de éxitos.
  
- Supongamos que se realizan ensayos Bernoulli con una probabilidad de éxito p en cada ensayo. Sea X la variable aleatoria que representa el número de ensayos requeridos para obtener n éxitos. Entonces, la función de probabilidad de la distribución de probabilidad Pascal está dada por:
+ Supongamos que se realizan ensayos Bernoulli con una probabilidad de éxito $p$ en cada ensayo. Sea X la variable aleatoria que representa el número de ensayos requeridos para obtener n éxitos. Entonces, la función de probabilidad de la distribución de probabilidad Pascal está dada por:
 \begin{equation}
     P(X = x) = \binom{x - 1}{r - 1} p^r (1 - p)^{x - r}
 \end{equation}
@@ -686,11 +686,11 @@ Ambos gráficos muestran una distribución escalonada, con alturas proporcionale
 
 
 \subsection{Testeos}
-Realizamos un  conjunto de pruebas estadísticas para verificar si las muestras generadas a partir de las distintas distribuciones probabilísticas se ajustan a sus respectivas distribuciones teóricas. Es decir, qué tanto se asemeja la práctica a la teoría. Utilizamos las pruebas:
+Mediante Python, realizamos un  conjunto de pruebas estadísticas para verificar si las muestras generadas a partir de las distintas distribuciones probabilísticas se ajustan a sus respectivas distribuciones teóricas. Es decir, qué tanto se asemeja la práctica a la teoría. Utilizamos las pruebas:
 
 \begin{itemize}
-    \item \textbf{Prueba de Kolmogorov-Smirnov (K-S)}: es una prueba no paramétrica que compara la distribución acumulada empírica de una muestra con la función de distribución acumulada teórica de una distribución continua específica. Su objetivo es determinar si la muestra podría provenir de dicha distribución. La aplicadamos a las distribucionesUniforme, Exponencial y Normal.
-    \item \textbf{Prueba de Chi-Cuadrado ($\chi^2$)}: se utiliza para comparar las frecuencias observadas en una muestra con las frecuencias esperadas bajo una cierta distribución discreta. La aplicadamos a las distribuciones Binomial, Poisson y Empírica Discreta.
+    \item \textbf{Prueba de Kolmogorov-Smirnov (K-S)}: es una prueba no paramétrica que compara la distribución acumulada empírica de una muestra con la función de distribución acumulada teórica de una distribución continua específica. Su objetivo es determinar si la muestra podría provenir de dicha distribución. La aplicamos a las distribuciones Uniforme, Exponencial y Normal.
+    \item \textbf{Prueba de Chi-Cuadrado ($\chi^2$)}: se utiliza para comparar las frecuencias observadas en una muestra con las frecuencias esperadas bajo una cierta distribución discreta. La aplicamos a las distribuciones Binomial, Poisson y Empírica Discreta.
 \end{itemize}
 
 A continuación describimos los resultados de las pruebas. Para cada distribución, generamos una muestra de 5000 datos a la que luego le aplicamos la prueba correspondiente a su tipo (continua o discreta).
@@ -711,6 +711,22 @@ A continuación describimos los resultados de las pruebas. Para cada distribuci�
 \end{enumerate}
 
 Estos resultados tan favorables no resultan extraños, ya que en todo momento nos basamos en metodologías correctas y aceptadas, con alta confiabilidad por parte del mundo matemático.
+
+El programa desarrollado además imprime en la consola los resultados de los tests
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Imagenes/tests.png}
+    \caption{Resultados de los tests}
+    \label{fig:Distr.Poisson}
+\end{figure}
+
+Donde:
+\begin{itemize}
+    \item \( D \): es el estadístico de Kolmogorov-Smirnov, representa la máxima diferencia entre la función de distribución observada y la teórica. Mientras mas chico, mejor.
+    \item \( X^2 \): es el estadístico Chi-Cuadrado, que indica la discrepancia entre la frecuencia observada y la esperada. Mientras mas chico, mejor es el ajuste.
+    \item \( p \): es el valor-p. Para todos los tests se estableció un $p > 0.05$ para determinar si se pasa el test.
+\end{itemize}
 
 
 \section{Conclusión}
