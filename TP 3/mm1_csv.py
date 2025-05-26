@@ -1,24 +1,13 @@
-"""
-Sistema M/M/1/K
-Llegadas y tiempo de servicio exponenciales
-1 servidor
-Cola finita de tamaño K, FIFO
-
-Variar (al menos) las tasas de arribo: 25%, 50%, 75%, 100%, 125% con respecto a la tasa de servicio
-"""
-
-# Ver bien el sim_time, justificar valor
-
 import simpy
 import numpy as np
 from collections import defaultdict
 import argparse
+import json
+import csv
+import os
 
 """
-arrival_rate: 0.25, 0.5, 0.75, 1.0, 1.25
-service_rate: 1.0
-sim_time = 1000
-queue_capacity: 0, 2, 5, 10, 50 o None para infinita
+Hace 10 corridas y guarda los resultados en .csv
 """
 
 parser = argparse.ArgumentParser(description='Simulación M/M/1/K')
@@ -38,20 +27,16 @@ class MM1Queue:
     self.wait_times = []
     self.queue_times = []
     self.server_busy_time = 0
-    self.queue_over_time = [] # para ver la evolucion de la cola en el tiempo (este dato no se esta guardando en el csv)
-    # el problema radica en que si el tiempo de simulacion es muy grande esto se hace enorme
+    self.queue_over_time = []
 
-    # Métricas de estado del sistema
     self.num_in_system = 0
     self.area_num_in_system = 0.0
     self.area_num_in_queue = 0.0
     self.last_event_time = 0.0
 
-    # Para probabilidad de n clientes en cola
     self.max_n_tracked = max_n_tracked
     self.queue_length_time = defaultdict(float)
 
-    # Métricas de rechazo
     self.rejected_arrivals = 0
     self.total_arrivals = 0
 
@@ -63,11 +48,10 @@ class MM1Queue:
 
     self.queue_over_time.append((self.env.now, queue_length))
 
-    # Contar cuánto tiempo hay n clientes en cola
     if queue_length <= self.max_n_tracked:
       self.queue_length_time[queue_length] += time_since_last
     else:
-      self.queue_length_time[self.max_n_tracked] += time_since_last  # agrupar los grandes
+      self.queue_length_time[self.max_n_tracked] += time_since_last
 
     self.last_event_time = self.env.now
 
@@ -77,10 +61,9 @@ class MM1Queue:
       self.update_areas()
       self.total_arrivals += 1
 
-      # Verificar capacidad si hay límite
       if self.queue_capacity is not None and self.num_in_system >= self.queue_capacity + 1:
         self.rejected_arrivals += 1
-        continue  # llegada rechazada
+        continue
 
       self.num_in_system += 1
       self.env.process(self.service())
@@ -101,7 +84,6 @@ class MM1Queue:
       self.update_areas()
       self.num_in_system -= 1
       self.server_busy_time += service_time
-
       self.wait_times[-1] += service_time
 
   def run(self, sim_time):
@@ -114,28 +96,50 @@ class MM1Queue:
     self.prob_n_in_queue = {
       n: self.queue_length_time[n] / sim_time for n in range(self.max_n_tracked + 1)
     }
-
     self.blocking_probability = (
       self.rejected_arrivals / self.total_arrivals if self.total_arrivals > 0 else 0
     )
 
+# --- Simulación con múltiples corridas ---
+num_runs = 10
+max_n = args.queue_capacity if args.queue_capacity is not None else 100
 
-env = simpy.Environment()
-queue = MM1Queue(env, args.arrival_rate, args.service_rate, queue_capacity=args.queue_capacity, max_n_tracked=args.queue_capacity if args.queue_capacity != None else 100)
-queue.run(args.sim_time)
+# Crear archivo CSV y escribir encabezado
 
-print(f"Capacidad de cola: {args.queue_capacity if args.queue_capacity != None else 'infinita'}")
-print(f"Probabilidad de denegación de servicio: {queue.blocking_probability:.4f}")
-print(f"Promedio de clientes en el sistema (L): {queue.avg_num_in_system:.4f}")
-print(f"Promedio de clientes en la cola (Lq): {queue.avg_num_in_queue:.4f}")
-print(f"Tiempo promedio en el sistema (W): {np.mean(queue.wait_times):.4f}")
-print(f"Tiempo promedio en la cola (Wq): {np.mean(queue.queue_times):.4f}")
-print(f"Utilización del servidor: {queue.server_busy_time / args.sim_time:.4f}")
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resultados.csv')
 
-print("\nProbabilidad de encontrar exactamente n clientes en cola:")
-for n, prob in queue.prob_n_in_queue.items():
-  if prob > 0:
-    print(f" P(n={n}) = {prob:.4f}")
-  if n != args.queue_capacity and prob == 0:
-    print(f" P(n>={n}) = 0.0000")
-    break
+with open(output_path, "w", newline="") as f:
+  writer = csv.DictWriter(f, fieldnames=[
+    "run", "arrival_rate", "service_rate", "queue_capacity", "sim_time",
+    "blocking_probability", "avg_num_in_system", "avg_num_in_queue",
+    "avg_wait_time", "avg_queue_time", "server_utilization", "prob_n_in_queue"
+  ])
+  writer.writeheader()
+
+  for run_id in range(1, num_runs + 1):
+    env = simpy.Environment()
+    queue = MM1Queue(env, args.arrival_rate, args.service_rate, queue_capacity=args.queue_capacity, max_n_tracked=max_n)
+    queue.run(args.sim_time)
+
+    print(f"\n--- Corrida {run_id} ---")
+    print(f"Probabilidad de denegación de servicio: {queue.blocking_probability:.4f}")
+    print(f"Promedio de clientes en el sistema (L): {queue.avg_num_in_system:.4f}")
+    print(f"Promedio de clientes en la cola (Lq): {queue.avg_num_in_queue:.4f}")
+    print(f"Tiempo promedio en el sistema (W): {np.mean(queue.wait_times):.4f}")
+    print(f"Tiempo promedio en la cola (Wq): {np.mean(queue.queue_times):.4f}")
+    print(f"Utilización del servidor: {queue.server_busy_time / args.sim_time:.4f}")
+
+    writer.writerow({
+      "run": run_id,
+      "arrival_rate": args.arrival_rate,
+      "service_rate": args.service_rate,
+      "queue_capacity": args.queue_capacity,
+      "sim_time": args.sim_time,
+      "blocking_probability": queue.blocking_probability,
+      "avg_num_in_system": queue.avg_num_in_system,
+      "avg_num_in_queue": queue.avg_num_in_queue,
+      "avg_wait_time": np.mean(queue.wait_times),
+      "avg_queue_time": np.mean(queue.queue_times),
+      "server_utilization": queue.server_busy_time / args.sim_time,
+      "prob_n_in_queue": json.dumps(queue.prob_n_in_queue)
+    })
