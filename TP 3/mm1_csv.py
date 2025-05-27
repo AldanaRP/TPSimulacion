@@ -7,7 +7,19 @@ import csv
 import os
 
 """
+Sistema M/M/1/K
+Llegadas y tiempo de servicio exponenciales
+1 servidor
+Cola finita de tamaño K, FIFO
 Hace 10 corridas y guarda los resultados en .csv
+
+Parametros a usar: 
+  arrival_rate: 0.25, 0.5, 0.75, 1.0, 1.25
+  service_rate: 1.0
+  sim_time = 1000
+  queue_capacity: 0, 2, 5, 10, 50 o None para infinita
+
+Como usar ingresar los parametros: -a 0.25 -s 1.0 -k 50 -t 1000 (ejemplo)
 """
 
 parser = argparse.ArgumentParser(description='Simulación M/M/1/K')
@@ -18,7 +30,7 @@ parser.add_argument('-t', '--sim_time', type=float, default=1000, help='Tiempo t
 args = parser.parse_args()
 
 class MM1Queue:
-  def __init__(self, env, arrival_rate, service_rate, queue_capacity=None, max_n_tracked=10):
+  def __init__(self, env, arrival_rate, service_rate, queue_capacity=None, max_n_tracked=10, sampling_interval=20.0):
     self.env = env
     self.server = simpy.Resource(env, capacity=1)
     self.arrival_rate = arrival_rate
@@ -27,7 +39,10 @@ class MM1Queue:
     self.wait_times = []
     self.queue_times = []
     self.server_busy_time = 0
+
     self.queue_over_time = []
+    self.sampling_interval = sampling_interval
+    self.next_sample_time = 0.0
 
     self.num_in_system = 0
     self.area_num_in_system = 0.0
@@ -46,7 +61,10 @@ class MM1Queue:
     self.area_num_in_system += self.num_in_system * time_since_last
     self.area_num_in_queue += queue_length * time_since_last
 
-    self.queue_over_time.append((self.env.now, queue_length))
+    # Se hace un muestreo de la longitud de la cola
+    if self.env.now >= self.next_sample_time:
+      self.queue_over_time.append((self.env.now, queue_length))
+      self.next_sample_time += self.sampling_interval
 
     if queue_length <= self.max_n_tracked:
       self.queue_length_time[queue_length] += time_since_last
@@ -112,7 +130,8 @@ with open(output_path, "w", newline="") as f:
   writer = csv.DictWriter(f, fieldnames=[
     "run", "arrival_rate", "service_rate", "queue_capacity", "sim_time",
     "blocking_probability", "avg_num_in_system", "avg_num_in_queue",
-    "avg_wait_time", "avg_queue_time", "server_utilization", "prob_n_in_queue"
+    "avg_wait_time", "avg_queue_time", "server_utilization", "prob_n_in_queue",
+    "queue_over_time"
   ])
   writer.writeheader()
 
@@ -141,5 +160,6 @@ with open(output_path, "w", newline="") as f:
       "avg_wait_time": np.mean(queue.wait_times),
       "avg_queue_time": np.mean(queue.queue_times),
       "server_utilization": queue.server_busy_time / args.sim_time,
-      "prob_n_in_queue": json.dumps(queue.prob_n_in_queue)
+      "prob_n_in_queue": json.dumps(queue.prob_n_in_queue),
+      "queue_over_time": json.dumps(queue.queue_over_time)
     })

@@ -7,7 +7,7 @@ Cola finita de tamaño K, FIFO
 Variar (al menos) las tasas de arribo: 25%, 50%, 75%, 100%, 125% con respecto a la tasa de servicio
 """
 
-# Ver bien el sim_time, justificar valor
+# este esta desactualizado pero todavia lo dejo por las dudas
 
 import simpy
 import numpy as np
@@ -38,8 +38,7 @@ class MM1Queue:
     self.wait_times = []
     self.queue_times = []
     self.server_busy_time = 0
-    self.queue_over_time = [] # para ver la evolucion de la cola en el tiempo (este dato no se esta guardando en el csv)
-    # el problema radica en que si el tiempo de simulacion es muy grande esto se hace enorme
+    self.queue_over_time = []
 
     # Métricas de estado del sistema
     self.num_in_system = 0
