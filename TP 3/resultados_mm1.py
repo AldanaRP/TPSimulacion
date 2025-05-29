@@ -10,7 +10,7 @@ import os
 
 os.makedirs('./TP 3/Imagenes', exist_ok=True)
 
-df = pd.read_csv('./TP 3/resultados.csv')
+df = pd.read_csv('./TP 3/resultados_mm1.csv')
 arrival_rate = df['arrival_rate'].iloc[0]
 queue_capacity = df['queue_capacity'].iloc[0]
 queue_type = 'infinita' if queue_capacity == '' or pd.isna(queue_capacity) else f'K{int(queue_capacity)}'

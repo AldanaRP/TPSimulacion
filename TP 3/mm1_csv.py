@@ -124,7 +124,7 @@ max_n = args.queue_capacity if args.queue_capacity is not None else 100
 
 # Crear archivo CSV y escribir encabezado
 
-output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resultados.csv')
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resultados_mm1.csv')
 
 with open(output_path, "w", newline="") as f:
   writer = csv.DictWriter(f, fieldnames=[
@@ -163,3 +163,5 @@ with open(output_path, "w", newline="") as f:
       "prob_n_in_queue": json.dumps(queue.prob_n_in_queue),
       "queue_over_time": json.dumps(queue.queue_over_time)
     })
+
+print(f"\nResultados guardados en: {output_path}\n")

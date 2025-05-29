@@ -2,9 +2,10 @@ import random
 import heapq
 import numpy as np
 import argparse
+import os
+import csv
 
-# faltaria hacer 10 corridas por siumulacion
-# faltaria hacer graficos
+# faltaria hacer graficos, hacer en archivo aparte de resultados
 
 """
 Politicas (s, S) a testear:
@@ -21,6 +22,8 @@ Politicas (s, S) a testear:
 Tiempos entre demandas:
 0.01, 0.1, 1
 """
+
+runs = 10 # Corridas
 
 parser = argparse.ArgumentParser(description='Modelo de Inventario (s, S)')
 parser.add_argument('-s', '--s', type=int, required=True, help='Nivel de pedido')
@@ -146,34 +149,80 @@ def update_time_avg_stats(current_time):
   else:
     area_shortage += abs(inventory_level) * time_passed
 
-# Programa los eventos iniciales
-schedule_event(DEMAND, expon(mean_interdemand))
-schedule_event(EVALUATE_INVENTORY, 1.0)
-schedule_event(SIMULATION_END, n_months)
+def reset_values():
+  """
+  Resetea los valores de las variables de estado y estadísticas
+  para una nueva corrida de simulación
+  """
+  global sim_time, inventory_level, order_pending, total_ordering_cost
+  global area_holding, area_shortage, last_event_time, event_queue
 
-while event_queue:
-  # Consigue el proximo evento y actualiza el tiempo
-  sim_time, event_type = heapq.heappop(event_queue)
-  update_time_avg_stats(sim_time)
+  sim_time = 0.0
+  inventory_level = initial_inventory
+  order_pending = False
+  total_ordering_cost = 0.0
+  area_holding = 0.0
+  area_shortage = 0.0
+  last_event_time = 0.0
+  event_queue.clear()
 
-  if event_type == ORDER_ARRIVAL:
-    order_arrival()
-  elif event_type == DEMAND:
-    demand()
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resultados_inv.csv')
+
+with open(output_path, "w", newline="") as f:
+  writer = csv.DictWriter(f, fieldnames=[
+    "run", "S", "s", "mean_interdemand", "total_ordering_cost",
+    "avg_holding_cost", "avg_shortage_cost", "total_cost"
+  ])
+  writer.writeheader()
+
+
+  for run in range(1, runs + 1):
+
+    reset_values()
+
+    # Programa los eventos iniciales
     schedule_event(DEMAND, expon(mean_interdemand))
-  elif event_type == EVALUATE_INVENTORY:
-    evaluate_inventory()
-    if sim_time + 1.0 <= n_months:
-      schedule_event(EVALUATE_INVENTORY, 1.0)
-  elif event_type == SIMULATION_END:
-    break
+    schedule_event(EVALUATE_INVENTORY, 1.0)
+    schedule_event(SIMULATION_END, n_months)
 
-avg_holding_cost = holding_cost * area_holding / n_months
-avg_shortage_cost = shortage_cost * area_shortage / n_months
+    while event_queue:
+      # Consigue el proximo evento y actualiza el tiempo
+      sim_time, event_type = heapq.heappop(event_queue)
+      update_time_avg_stats(sim_time)
 
-total_cost = total_ordering_cost + avg_holding_cost + avg_shortage_cost
+      if event_type == ORDER_ARRIVAL:
+        order_arrival()
+      elif event_type == DEMAND:
+        demand()
+        schedule_event(DEMAND, expon(mean_interdemand))
+      elif event_type == EVALUATE_INVENTORY:
+        evaluate_inventory()
+        if sim_time + 1.0 <= n_months:
+          schedule_event(EVALUATE_INVENTORY, 1.0)
+      elif event_type == SIMULATION_END:
+        break
 
-print(f"Costo de orden:       ${total_ordering_cost:.2f}")
-print(f"Costo de mantenimiento: ${avg_holding_cost:.2f}")
-print(f"Costo de faltante:     ${avg_shortage_cost:.2f}")
-print(f"COSTO TOTAL:           ${total_cost:.2f}")
+    avg_holding_cost = holding_cost * area_holding / n_months
+    avg_shortage_cost = shortage_cost * area_shortage / n_months
+
+    total_cost = total_ordering_cost + avg_holding_cost + avg_shortage_cost
+
+    print(f"\n--- Corrida {run} ---")
+    print(f"Costo de orden:       ${total_ordering_cost:.2f}")
+    print(f"Costo de mantenimiento: ${avg_holding_cost:.2f}")
+    print(f"Costo de faltante:     ${avg_shortage_cost:.2f}")
+    print(f"COSTO TOTAL:           ${total_cost:.2f}")
+
+    writer.writerow({
+      "run": run,
+      "S": S,
+      "s": s,
+      "mean_interdemand": mean_interdemand,
+      "total_ordering_cost": total_ordering_cost,
+      "avg_holding_cost": round(avg_holding_cost, 2),
+      "avg_shortage_cost": round(avg_shortage_cost, 2),
+      "total_cost": round(total_cost, 2)
+    })
+
+print(f"\nResultados guardados en: {output_path}\n")
+
