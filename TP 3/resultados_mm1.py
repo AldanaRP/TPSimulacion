@@ -6,6 +6,7 @@ import numpy as np
 import os
 
 # Lo que faltaria es mostrar la probabilidad de bloqueo (que es constante y no tiene sentido graficarla)
+# Podria mostrarse en consola tambien todos los resultados promediados (menos prob_n_in_queue y queue_over_time)
 
 os.makedirs('./TP 3/Imagenes', exist_ok=True)
 
