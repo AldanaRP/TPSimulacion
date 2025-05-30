@@ -20,10 +20,14 @@ Politicas (s, S) a testear:
 (60, 100)
 
 Tiempos entre demandas:
-0.01, 0.1, 1
+0.1 parece ser ideal, a lo sumo 0.11 0.12
 """
 
 runs = 10 # Corridas
+
+inventory_over_time = []
+sampling_interval = 0.1
+next_sample_time = 0.0
 
 parser = argparse.ArgumentParser(description='Modelo de Inventario (s, S)')
 parser.add_argument('-s', '--s', type=int, required=True, help='Nivel de pedido')
@@ -60,6 +64,7 @@ demand_sizes = list(range(1, 6))  # 1 al 5
 sim_time = 0.0
 inventory_level = initial_inventory
 order_pending = False
+pending_order_amount = 0
 
 # Estadísticas
 total_ordering_cost = 0.0
@@ -102,10 +107,10 @@ def order_arrival():
   Evento de llegada de pedido
   Actualiza el inventario con la cantidad ordenada y marca que ya no hay un pedido pendiente
   """
-  global inventory_level, order_pending
-  amount = S - inventory_level
-  inventory_level += amount
+  global inventory_level, order_pending, pending_order_amount
+  inventory_level += pending_order_amount
   order_pending = False
+  pending_order_amount = 0
 
 def demand():
   """
@@ -123,12 +128,12 @@ def evaluate_inventory():
   se programa un nuevo pedido hasta el nivel S, con un tiempo de entrega aleatorio
   También se acumula el costo asociado al pedido
   """
-  global total_ordering_cost, order_pending
+  global total_ordering_cost, order_pending, pending_order_amount
   if inventory_level < s and not order_pending:
-    amount = S - inventory_level
+    pending_order_amount = S - inventory_level
     delay = random.uniform(min_lag, max_lag)
     schedule_event(ORDER_ARRIVAL, delay)
-    total_ordering_cost += setup_cost + incremental_cost * amount
+    total_ordering_cost += setup_cost + incremental_cost * pending_order_amount
     order_pending = True
 
 def update_time_avg_stats(current_time):
@@ -141,7 +146,7 @@ def update_time_avg_stats(current_time):
   Calcula el área bajo la curva para el inventario disponible o faltante,
   usando el tiempo transcurrido desde el último evento
   """
-  global area_holding, area_shortage, last_event_time
+  global area_holding, area_shortage, last_event_time, next_sample_time
   time_passed = current_time - last_event_time
   last_event_time = current_time
   if inventory_level > 0:
@@ -149,29 +154,39 @@ def update_time_avg_stats(current_time):
   else:
     area_shortage += abs(inventory_level) * time_passed
 
+  while next_sample_time <= current_time:
+    inventory_over_time.append((next_sample_time, inventory_level))
+    next_sample_time += sampling_interval
+
 def reset_values():
   """
   Resetea los valores de las variables de estado y estadísticas
   para una nueva corrida de simulación
   """
-  global sim_time, inventory_level, order_pending, total_ordering_cost
-  global area_holding, area_shortage, last_event_time, event_queue
+  global sim_time, inventory_level, order_pending, total_ordering_cost, pending_order_amount
+  global area_holding, area_shortage, last_event_time, event_queue, next_sample_time
 
   sim_time = 0.0
   inventory_level = initial_inventory
   order_pending = False
+  pending_order_amount = 0
   total_ordering_cost = 0.0
   area_holding = 0.0
   area_shortage = 0.0
   last_event_time = 0.0
+  inventory_over_time.clear()
   event_queue.clear()
+
+  inventory_over_time.append((0.0, inventory_level))
+  next_sample_time = 0.0
+
 
 output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resultados_inv.csv')
 
 with open(output_path, "w", newline="") as f:
   writer = csv.DictWriter(f, fieldnames=[
     "run", "S", "s", "mean_interdemand", "total_ordering_cost",
-    "avg_holding_cost", "avg_shortage_cost", "total_cost"
+    "avg_holding_cost", "avg_shortage_cost", "total_cost", "inventory_over_time"
   ])
   writer.writeheader()
 
@@ -221,7 +236,8 @@ with open(output_path, "w", newline="") as f:
       "total_ordering_cost": total_ordering_cost,
       "avg_holding_cost": round(avg_holding_cost, 2),
       "avg_shortage_cost": round(avg_shortage_cost, 2),
-      "total_cost": round(total_cost, 2)
+      "total_cost": round(total_cost, 2),
+      "inventory_over_time": inventory_over_time
     })
 
 print(f"\nResultados guardados en: {output_path}\n")

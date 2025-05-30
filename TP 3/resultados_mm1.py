@@ -8,7 +8,7 @@ import os
 # Lo que faltaria es mostrar la probabilidad de bloqueo (que es constante y no tiene sentido graficarla)
 # Podria mostrarse en consola tambien todos los resultados promediados (menos prob_n_in_queue y queue_over_time)
 
-os.makedirs('./TP 3/Imagenes', exist_ok=True)
+os.makedirs('./TP 3/MM1', exist_ok=True)
 
 df = pd.read_csv('./TP 3/resultados_mm1.csv')
 arrival_rate = df['arrival_rate'].iloc[0]
@@ -39,7 +39,7 @@ plt.ylabel('Valor')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig(f'./TP 3/Imagenes/metricas_{arrival_rate}_{queue_type}.png')
+plt.savefig(f'./TP 3/MM1/metricas_{arrival_rate}_{queue_type}.png')
 
 # Grafico de utilizacion del servidor por cada corrida
 
@@ -52,7 +52,7 @@ plt.ylabel('Valor')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig(f'./TP 3/Imagenes/util_sv_{arrival_rate}_{queue_type}.png')
+plt.savefig(f'./TP 3/MM1/util_sv_{arrival_rate}_{queue_type}.png')
 
 # Combinar distribuciones de todas las corridas
 combined_probs = defaultdict(float)
@@ -75,7 +75,7 @@ plt.xlabel('n clientes en cola')
 plt.ylabel('Probabilidad')
 plt.grid(True, axis='y')
 plt.tight_layout()
-plt.savefig(f'./TP 3/Imagenes/prob_n_clientes_{arrival_rate}_{queue_type}.png')
+plt.savefig(f'./TP 3/MM1/prob_n_clientes_{arrival_rate}_{queue_type}.png')
 
 # Grafico del tamaño de la cola a lo largo del tiempo
 
@@ -101,4 +101,4 @@ plt.ylabel('Clientes en cola')
 plt.legend(loc='upper right')
 plt.grid(True)
 plt.tight_layout()
-plt.savefig(f'./TP 3/Imagenes/cola_vs_tiempo_{arrival_rate}_{queue_type}.png')
+plt.savefig(f'./TP 3/MM1/cola_vs_tiempo_{arrival_rate}_{queue_type}.png')
