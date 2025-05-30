@@ -3,17 +3,14 @@ import matplotlib.pyplot as plt
 import ast
 import os
 
-# Leer el CSV
 df = pd.read_csv("./TP 3/resultados_inv.csv")
 
 output_dir = "./TP 3/Inventario"
 os.makedirs(output_dir, exist_ok=True)
 
-# Crear figura
 plt.figure(figsize=(12, 6))
 
-# Valores de referencia para las líneas horizontales
-s_line = df["s"].min()  # o podrías usar df["s"].iloc[0] si querés uno solo
+s_line = df["s"].min()
 S_line = df["S"].max()
 
 # Iterar por cada corrida
@@ -30,12 +27,10 @@ for _, row in df.iterrows():
     except Exception as e:
         print(f"Error al procesar la corrida {run}: {e}")
 
-# Líneas horizontales de referencia
 plt.axhline(y=0, color='black', linestyle='-', linewidth=1.5, label='Nivel 0')
 plt.axhline(y=s_line, color='red', linestyle='-', linewidth=1.5, label=f's = {s_line}')
 plt.axhline(y=S_line, color='blue', linestyle='-', linewidth=1.5, label=f'S = {S_line}')
 
-# Configuración del gráfico
 plt.title(f"Nivel de Inventario a lo Largo del Tiempo - Política ({s_line}, {S_line})")
 plt.xlabel("Tiempo")
 plt.ylabel("Nivel de Inventario")
@@ -50,7 +45,6 @@ plt.close()
 
 grouped = df.groupby(["s", "S", "mean_interdemand"])
 
-# Iterar por cada grupo y crear una imagen de tabla
 for (s, S, mean_interdemand), group in grouped:
     # Calcular promedios y renombrar columnas
     summary = group[[
@@ -65,12 +59,10 @@ for (s, S, mean_interdemand), group in grouped:
         "Costo total"
     ]
 
-    # Crear figura y ejes
     fig, ax = plt.subplots(figsize=(8, 2))
     ax.axis('tight')
     ax.axis('off')
 
-    # Crear tabla
     table = ax.table(
         cellText=summary.values,
         colLabels=summary.columns,
@@ -82,13 +74,11 @@ for (s, S, mean_interdemand), group in grouped:
     table.set_fontsize(10)
     table.scale(1.2, 1.2)
 
-    # Título
     plt.title(
         f"Promedios política ({s}, {S})",
         fontsize=12, pad=5
     )
 
-    # Guardar imagen
     filename = f"promedios_{s}_{S}.png"
     filepath = os.path.join(output_dir, filename)
     plt.savefig(filepath, bbox_inches="tight")
