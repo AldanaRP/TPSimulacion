@@ -222,8 +222,8 @@ def calcular_frsa(estrategia, ruleta, num_tiradas, repeticiones=100, capital_inf
 
 def main():
     parser = argparse.ArgumentParser(description='Simulador de estrategias de apuesta en ruleta')
-    parser.add_argument('-c', type=int, default=1, help='Número de corridas')
-    parser.add_argument('-n', type=int, default=100, help='Número de tiradas')
+    parser.add_argument('-c', type=int, default=5, help='Número de corridas')
+    parser.add_argument('-n', type=int, default=2000, help='Número de tiradas')
     parser.add_argument('-s', choices=['m', 'd', 'f', 'o'], default='m', help='Estrategia: m (martingala), d (D\'Alembert), f (Fibonacci), o (Paroli)')
     parser.add_argument('-a', choices=['i', 'f'], default='f', help='Tipo de capital: i (infinito), f (finito)')
 
@@ -310,7 +310,7 @@ def main():
 
     fig.suptitle(f'FRSA - Estrategia: {nombre_estrategia}', fontsize=20)
     plt.tight_layout()
-    plt.savefig(f'frsa_{nombre_estrategia}.png')
+    plt.savefig(f'./TP 1.2/frsa_{nombre_estrategia}.png')
     plt.clf()
 
     # Flujo de caja
@@ -327,7 +327,7 @@ def main():
     ax2.legend()
 
     plt.tight_layout()
-    plt.savefig(f'flujo_caja_{nombre_estrategia}_{args.a}.png')
+    plt.savefig(f'./TP 1.2/flujo_caja_{nombre_estrategia}_{args.a}.png')
     plt.clf()
 
 if __name__ == "__main__":

@@ -36,7 +36,7 @@ count_total_rojo = count_total_negro = count_total_verde = 0
 colors = ["#a855f7", "#c084fc", "#f97316", "#fdba74"] * ((nro_corridas // 4) + 1)
 
 # --- Crear carpeta para guardar imágenes ---
-os.makedirs("graficos", exist_ok=True)
+os.makedirs("./TP 1.1/graficos", exist_ok=True)
 
 # --- Definir números por color ---
 rojos = {1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36}
@@ -98,7 +98,7 @@ for p in range(nro_corridas):
     plt.xlabel("Valores")
     plt.ylabel("Frecuencia absoluta")
     plt.title(f"Grafico de Barras - Corrida {p + 1}")
-    plt.savefig(f"graficos/Barras_corrida_{p + 1}.png")
+    plt.savefig(f"./TP 1.1/graficos/Barras_corrida_{p + 1}.png")
     plt.clf()
 
     plt.figure(figsize=(8, 6))
@@ -106,19 +106,19 @@ for p in range(nro_corridas):
     plt.xlabel("Valores")
     plt.ylabel("Frecuencia absoluta")
     plt.title(f"Histograma - Corrida {p + 1}")
-    plt.savefig(f"graficos/Histograma_corrida_{p + 1}.png")
+    plt.savefig(f"./TP 1.1/graficos/Histograma_corrida_{p + 1}.png")
     plt.clf()
 
     plt.figure(figsize=(8, 6))
     plt.pie([count_cero, count_pd, count_sd, count_td], labels=['CERO', 'PRIMERA', 'SEGUNDA', 'TERCERA'], autopct='%1.1f%%', colors=["#a855f7", "#f97316", "#c084fc", "#fdba74"], textprops={'fontsize': 18})
     plt.title(f'Distribución por Docena - Corrida {p + 1}')
-    plt.savefig(f"graficos/GraficoTorta_corrida_{p + 1}.png")
+    plt.savefig(f"./TP 1.1/graficos/GraficoTorta_corrida_{p + 1}.png")
     plt.clf()
 
     plt.figure(figsize=(8, 6))
     plt.pie([count_rojo, count_negro, count_verde], labels=['ROJO', 'NEGRO', 'VERDE'], autopct=lambda p: f'{p:.1f}%', colors=['red', 'black', 'green'], textprops={'fontsize': 18,'color': 'white'})
     plt.title(f'Distribución por Color - Corrida {p + 1}')
-    plt.savefig(f"graficos/GraficoColor_corrida_{p + 1}.png")
+    plt.savefig(f"./TP 1.1/graficos/GraficoColor_corrida_{p + 1}.png")
     plt.clf()
 
     plt.figure(figsize=(13, 10))
@@ -173,19 +173,19 @@ for p in range(nro_corridas):
     plt.yticks(yticks)
 
     plt.tight_layout()
-    plt.savefig(f"graficos/ParametrosCorrida_{p + 1}.png")
+    plt.savefig(f"./TP 1.1/graficos/ParametrosCorrida_{p + 1}.png")
     plt.clf()
 
 plt.figure(figsize=(8, 6))
 plt.pie([count_total_cero, count_total_pd, count_total_sd, count_total_td], labels=['CERO', 'PRIMERA', 'SEGUNDA', 'TERCERA'], autopct='%1.1f%%', colors=["#a855f7", "#f97316", "#c084fc", "#fdba74"], textprops={'fontsize': 18})
 plt.title('Distribución por Docena - Total Corridas')
-plt.savefig("graficos/GraficoTortaTotalCorridas.png")
+plt.savefig(f"./TP 1.1/graficos/GraficoTortaTotalCorridas.png")
 plt.clf()
 
 plt.figure(figsize=(8, 6))
 plt.pie([count_total_rojo, count_total_negro, count_total_verde], labels=['ROJO', 'NEGRO', 'VERDE'], autopct=lambda p: f'{p:.1f}%', colors=['red', 'black', 'green'], textprops={'fontsize': 18,'color': 'white'})
 plt.title('Distribución por Color - Total Corridas')
-plt.savefig("graficos/GraficoColorTotalCorridas.png")
+plt.savefig(f"./TP 1.1/graficos/GraficoColorTotalCorridas.png")
 plt.clf()
 
 x_range = range(1, nro_tiradas + 1)
@@ -253,7 +253,7 @@ yticks = sorted(set(yticks))
 plt.yticks(yticks)
 
 plt.tight_layout()
-plt.savefig("graficos/ParametrosTiradasTotales.png")
+plt.savefig(f"./TP 1.1/graficos/ParametrosTiradasTotales.png")
 plt.clf()
 
 frecuencias = np.bincount(corridas_tot)
@@ -263,7 +263,7 @@ plt.bar(list(range(37)), frecuencias, edgecolor="black", color="#a855f7", width=
 plt.xlabel('Valores')
 plt.ylabel('Frecuencia absoluta')
 plt.title('Grafico de Barras - Total de Tiradas')
-plt.savefig("graficos/BarrasTiradasTotales.png")
+plt.savefig(f"./TP 1.1/graficos/BarrasTiradasTotales.png")
 plt.clf()
 
 plt.figure(figsize=(8, 6))
@@ -271,7 +271,7 @@ plt.hist(corridas_tot, bins=37, edgecolor='black', color='#a855f7')
 plt.xlabel('Valores')
 plt.ylabel('Frecuencia absoluta')
 plt.title('Histograma - Total de Tiradas')
-plt.savefig("graficos/HistogramaTiradasTotales.png")
+plt.savefig(f"./TP 1.1/graficos/HistogramaTiradasTotales.png")
 plt.clf()
 
 # --- Resumen de las corridas ---

@@ -8,7 +8,7 @@ nro_tiradas = 1000
 medias = []
 resultados = []
 
-os.makedirs("graficos", exist_ok=True)
+os.makedirs("./TP 1.1/graficos", exist_ok=True)
 
 for _ in range(nro_corridas):
     corrida = np.random.randint(0, 37, nro_tiradas)
@@ -26,5 +26,5 @@ plt.xlabel('Media del resultado')
 plt.ylabel('Densidad')
 plt.legend()
 plt.tight_layout()
-plt.savefig("graficos/Histograma_medias_gauss.png")
+plt.savefig("./TP 1.1/graficos/Histograma_medias_gauss.png")
 plt.clf()
