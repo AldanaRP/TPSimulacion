@@ -1,0 +1,187 @@
+\documentclass{article}
+
+
+\usepackage{arxiv}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage[spanish]{babel}
+\usepackage{float}
+\usepackage{adjustbox}
+\graphicspath{ {./images/} }
+\renewcommand{\refname}{Referencias}
+
+
+\title{TP 3 - Simulación de Modelos: MM1 e Inventario.}
+
+
+\author{
+ Aldana Risso Patrón \\
+  Universidad Tecnológica Nacional - FRRO \\
+  Zeballos 1341, S2000, Argentina \\
+  \texttt{rissopatronaldana7@gmail.com} \\
+   \And
+ Ignacio Fierro \\
+  Universidad Tecnológica Nacional - FRRO \\
+  Zeballos 1341, S2000, Argentina \\
+  \texttt{nachofier@gmail.com} \\
+  \And
+ Lucía Gelmetti \\
+  Universidad Tecnológica Nacional - FRRO \\
+  Zeballos 1341, S2000, Argentina \\
+  \texttt{luligelmetti@gmail.com} \\
+  \And
+ Juan Cruz Bonanno \\
+  Universidad Tecnológica Nacional - FRRO \\
+  Zeballos 1341, S2000, Argentina \\
+  \texttt{bonanno2340@gmail.com} \\
+  \And
+ Franco Reggiardo Chuglar \\
+  Universidad Tecnológica Nacional - FRRO\\
+  Zeballos 1341, S2000, Argentina \\
+  \texttt{francoreggiardo15@gmail.com} \\
+  \And
+ Marcos Oldani \\
+  Universidad Tecnológica Nacional - FRRO \\
+  Zeballos 1341, S2000, Argentina \\
+  \texttt{marcosoldani1360@gmail.com} \\
+}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Este trabajo práctico tiene como objetivo estudiar, mediante simulación, el comportamiento de dos modelos clásicos: el modelo de colas \( M/M/1 \) y un modelo de inventario. Se analizarán diferentes métricas de rendimiento bajo diversas condiciones experimentales y se compararán los resultados obtenidos mediante simulación en Python, el software AnyLogic y los valores teóricos esperados.
+\end{abstract}
+
+\section{Introducción}
+En el ámbito de la investigación operativa y la gestión de sistemas, la simulación emerge como una herramienta poderosa para analizar y comprender el comportamiento de sistemas complejos que, de otro modo, serían difíciles de modelar analíticamente. Este trabajo se enfoca en la simulación de dos modelos : el modelo de colas M/M/1 y un modelo de inventario, fundamentales para la optimización de procesos en diversos sectores, desde la manufactura y la logística hasta los servicios y las telecomunicaciones.
+
+\subsection{Modelo M/M/1}
+
+El modelo M/M/1 es la base de la teoría de colas, representando un sistema simple con una única cola, un único servidor, llegadas que siguen una distribución de Poisson y tiempos de servicio que se distribuyen exponencialmente. La simulación de este modelo no solo permite validar las fórmulas analíticas que describen su comportamiento en estado estacionario, sino que también ofrece una visión invaluable de su dinámica transitoria, es decir, cómo el sistema se comporta desde que inicia hasta que alcanza un equilibrio. Comprender estas dinámicas es crucial para el diseño y la gestión de sistemas donde la espera es una parte inherente del proceso, como centros de llamadas, estaciones de servicio o líneas de producción.
+
+El modelo \( M/M/1 \) se caracteriza por:
+
+\begin{itemize}
+    \item Arribos según un proceso de Poisson con tasa \( \lambda \) (clientes por unidad de tiempo).
+    \item Tiempos de servicio distribuidos exponencialmente con tasa \( \mu \).
+    \item Un solo servidor.
+    \item Cola infinita o de tamaño limitado (según variante).
+\end{itemize}
+
+\subsubsection*{Métricas de rendimiento}
+
+Para el sistema con cola infinita y en estado estable (\( \rho = \lambda / \mu < 1 \)):
+
+\begin{itemize}
+    \item Promedio de clientes en el sistema: \( L = \frac{\rho}{1 - \rho} \)
+    \item Promedio de clientes en la cola: \( L_q = \frac{\rho^2}{1 - \rho} \)
+    \item Tiempo promedio en el sistema: \( W = \frac{1}{\mu - \lambda} \)
+    \item Tiempo promedio en la cola: \( W_q = \frac{\lambda}{\mu(\mu - \lambda)} \)
+    \item Utilización del servidor: \( \rho = \frac{\lambda}{\mu} \)
+    \item Probabilidad de encontrar \( n \) clientes en la cola: \( P_n = (1 - \rho)\rho^n \)
+    \item Probabilidad de denegación de servicio para cola finita de tamaño \( K \):
+    \[
+        P_{denegación} = \frac{(1 - \rho)\rho^K}{1 - \rho^{K+1}}
+    \]
+\end{itemize}
+
+\subsubsection*{Experimentos propuestos}
+
+Se evaluarán diferentes valores de \( \lambda \) (25\%, 50\%, 75\%, 100\%, 125\% de \( \mu \)), con un mínimo de 10 corridas por experimento.
+
+\vspace{1em}
+\textbf{Ejemplo de inserción de gráfico:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{grafico_MM1.png}
+    \caption{Comparación de tiempos promedio en el sistema para distintas tasas de arribo}
+\end{figure}
+
+\subsection{Modelo de Inventario}
+La gestión de inventarios es un componente crítico de la cadena de suministro, cuyo objetivo es equilibrar la disponibilidad de productos con los costos asociados a su almacenamiento. Un modelo de inventario busca determinar las políticas óptimas para reordenar y mantener existencias, minimizando costos de mantenimiento, costos de pedido y costos de escasez. A través de la simulación, podemos explorar cómo diferentes políticas de inventario impactan en estos costos bajo condiciones variables de demanda y suministro, lo que permite identificar estrategias robustas para asegurar la eficiencia operativa y la satisfacción del cliente.
+
+El objetivo principal de este trabajo es presentar un enfoque práctico para la simulación de ambos modelos utilizando técnicas de simulación discreta por eventos. La elección de LaTeX para la documentación de este trabajo no es arbitraria; su capacidad para producir documentos de alta calidad tipográfica y su robustez para la inclusión de fórmulas matemáticas y gráficos lo convierten en el formato ideal para la presentación clara y estructurada de los modelos, los resultados de la simulación y las conclusiones derivadas. Buscamos ofrecer una guía clara y reproducible para aquellos interesados en aplicar la simulación como una herramienta para la toma de decisiones en el diseño y la optimización de sistemas.
+
+Los modelos de inventario buscan optimizar la gestión de stock minimizando los costos asociados. En este caso se consideran tres tipos de costos:
+
+\begin{itemize}
+    \item Costo de orden (\( C_o \)): cada vez que se realiza un pedido.
+    \item Costo de mantenimiento (\( C_h \)): por unidad almacenada por unidad de tiempo.
+    \item Costo de faltante (\( C_s \)): penalización por no satisfacer la demanda.
+\end{itemize}
+
+\subsubsection*{Modelo básico de revisión periódica (s, S)}
+
+Un modelo común es el de revisión periódica, donde se hace un pedido para llevar el inventario a un nivel \( S \) cuando baja de un umbral \( s \). La demanda es aleatoria y puede seguir, por ejemplo, una distribución normal o Poisson.
+
+\subsubsection*{Métricas de rendimiento}
+
+\begin{itemize}
+    \item Costo total: 
+    \[
+        C_{total} = C_o + C_h + C_s
+    \]
+\end{itemize}
+
+Los parámetros del modelo serán definidos por los estudiantes y justificados en base al contexto elegido.
+
+\vspace{1em}
+\textbf{Ejemplo de inserción de gráfico:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{grafico_inventario.png}
+    \caption{Evolución del inventario y ocurrencia de faltantes}
+\end{figure}
+
+\section{Comparación de Resultados}
+
+Se realizará la comparación entre:
+\begin{itemize}
+    \item Resultados teóricos (basados en fórmulas).
+    \item Resultados de simulación con Python.
+    \item Resultados obtenidos con AnyLogic.
+\end{itemize}
+
+\section{Conclusiones}
+
+veremos...
+
+
+
+
+
+\bibliographystyle{unsrt}  
+\begin{thebibliography}{2}
+
+\bibitem{simulaciongithub}
+Aldana Risso Patrón. \textit{TP 3 - Generadores de números pseudoaleatorios de distintas Distribuciones de Probabilidad. (código fuente)}.\\
+Disponible en: \url{https://github.com/AldanaRP/TPSimulacion} \\
+
+\bibitem{bacchini2018}
+Bacchini, H. \textit{Introducción a la Probabilidad y a la Estadística}.\\
+Universidad de Buenos Aires, Facultad de Ciencias Económicas, 2018.\\
+Disponible en: \url{http://bibliotecadigital.econ.uba.ar/download/libros/Bacchini_Introduccion-a-la-probabilidad-y-a-la-estadistica-2018.pdf}\\
+
+\bibitem{libro}
+Averill M. Law \textit{Simulation modeling and analysis. Fifth edition }2015. \\
+Disponible en:
+\url{https://drive.google.com/file/d/1ycmnW5F-kY06XxyGKrjpVFNETkTKkBUV/view}
+
+\end{thebibliography}
+
+\end{document}
+
