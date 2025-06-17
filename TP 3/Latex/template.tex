@@ -102,13 +102,6 @@ Para el sistema con cola infinita y en estado estable (\( \rho = \lambda / \mu <
 Se evaluarán diferentes valores de \( \lambda \) (25\%, 50\%, 75\%, 100\%, 125\% de \( \mu \)), con un mínimo de 10 corridas por experimento.
 
 \vspace{1em}
-\textbf{Ejemplo de inserción de gráfico:}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.6\textwidth]{grafico_MM1.png}
-    \caption{Comparación de tiempos promedio en el sistema para distintas tasas de arribo}
-\end{figure}
 
 \subsection{Modelo de Inventario}
 La gestión de inventarios es un componente crítico de la cadena de suministro, cuyo objetivo es equilibrar la disponibilidad de productos con los costos asociados a su almacenamiento. Un modelo de inventario busca determinar las políticas óptimas para reordenar y mantener existencias, minimizando costos de mantenimiento, costos de pedido y costos de escasez. A través de la simulación, podemos explorar cómo diferentes políticas de inventario impactan en estos costos bajo condiciones variables de demanda y suministro, lo que permite identificar estrategias robustas para asegurar la eficiencia operativa y la satisfacción del cliente.
@@ -139,22 +132,104 @@ Un modelo común es el de revisión periódica, donde se hace un pedido para lle
 Los parámetros del modelo serán definidos por los estudiantes y justificados en base al contexto elegido.
 
 \vspace{1em}
-\textbf{Ejemplo de inserción de gráfico:}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{grafico_inventario.png}
-    \caption{Evolución del inventario y ocurrencia de faltantes}
-\end{figure}
 
 \section{Comparación de Resultados}
-
 Se realizará la comparación entre:
 \begin{itemize}
     \item Resultados teóricos (basados en fórmulas).
     \item Resultados de simulación con Python.
     \item Resultados obtenidos con AnyLogic.
 \end{itemize}
+
+\section{Modelo M/M/1}
+
+\subsection{Valor teórico esperado}}
+Como dijimos anteriormente, este modelo se caracteriza por tener una única línea de espera con capacidad finita \( K \), una tasa de llegada \( \lambda \), y una tasa de servicio \( \mu \), asumiendo una política de atención tipo FIFO (First In, First Out).
+
+Uno de los parámetros más relevantes es el factor de utilización del servidor, definido como \( \rho = \lambda / \mu \). A partir de este valor, se pueden deducir distintas métricas esperadas:
+
+- La probabilidad de que el sistema esté lleno (y por lo tanto una llegada sea rechazada), denotada como \( P_K \), depende de si el sistema está en **estado estable** (\( \rho \ne 1 \)). Se calcula mediante:
+
+\[
+P_0 = \frac{1 - \rho}{1 - \rho^{K+1}}, \quad \text{y} \quad P_K = P_0 \cdot \rho^K
+\]
+
+- El número promedio de clientes en el sistema, \( L \), y en la cola, \( L_q \), también pueden calcularse en función de \( \rho \), \( K \) y \( P_0 \), usando:
+
+\[
+L = \sum_{n=0}^{K} n \cdot P_n, \quad \text{donde} \quad P_n = P_0 \cdot \rho^n
+\]
+
+- Los tiempos promedio en el sistema y en la cola (\( W \) y \( W_q \)) se obtienen aplicando la ley de Little:
+
+\[
+W = \frac{L}{\lambda_{\text{efectiva}}}, \quad W_q = \frac{L_q}{\lambda_{\text{efectiva}}}
+\]
+
+donde \( \lambda_{\text{efectiva}} = \lambda \cdot (1 - P_K) \) representa la tasa de llegadas que realmente ingresan al sistema (ya que algunas son rechazadas).
+
+Estos valores sirven como referencia teórica para validar la precisión de los resultados obtenidos por simulación, en especial cuando el número de corridas y el tiempo de simulación son suficientemente grandes como para aproximarse al comportamiento estacionario.
+
+
+\subsection{En Python}
+Para analizar el comportamiento del sistema de colas \( M/M/1/K \), se desarrolló una simulación en lenguaje Python utilizando la biblioteca \texttt{SimPy}, que permite modelar eventos discretos en el tiempo. El sistema considerado representa un único servidor con llegadas y tiempos de servicio que siguen distribuciones exponenciales, y una cola de capacidad finita \( K \). En caso de que el sistema esté lleno (es decir, haya un cliente siendo atendido y \( K \) en espera), las nuevas llegadas son rechazadas.
+
+El código implementa este modelo y permite parametrizar la tasa de llegada (\( \lambda \)), la tasa de servicio (\( \mu \)), la capacidad de la cola (\( K \)) y el tiempo total de simulación, todo a través de argumentos por línea de comandos. Por ejemplo, un posible conjunto de parámetros de entrada sería: \texttt{-a 0.25 -s 1.0 -k 50 -t 1000}, lo que representa una tasa de llegada del 25\% de la capacidad del servidor, con una cola máxima de 50 clientes y una simulación de duración 1000 unidades de tiempo.
+
+El programa realiza un total de 10 corridas independientes para capturar la variabilidad estocástica del sistema. En cada corrida se registran métricas fundamentales tales como la probabilidad de bloqueo (cuando una llegada es rechazada por falta de espacio), el promedio de clientes en el sistema (\( L \)), el promedio de clientes en la cola (\( L_q \)), el tiempo promedio que un cliente pasa en el sistema (\( W \)) y en la cola (\( W_q \)), así como la utilización del servidor. Además, se calculan distribuciones de probabilidad del número de clientes en cola y se realiza un muestreo periódico de su longitud a lo largo del tiempo.
+
+Guardamos los resultados de cada corrida en un archivo \texttt{CSV}.
+#me gustaria poner la tabla del csv en los dos casos
+
+\subsubsection{Graficas para las distintas tasas de arribo:}
+Cola vs tiempo:
+[aca van los graficos]
+probabilidad promedio de encontrar n clientes en cola:
+[aca van los graficos]
+Utilizacion del servidor por corrida:
+[aca van los graficos]
+
+\subsection{En Anylogic}
+...
+
+\section{Modelo Inventario}
+
+\subsection{Valor teorico esperado}
+
+\subsection{En Python}
+Hicimos una simulación discreta en Python basada en el modelo clásico \((s, S)\). Este modelo establece que, cuando el nivel de inventario cae por debajo de un punto crítico \( s \), se realiza un pedido para reponer stock hasta alcanzar el nivel \( S \). La simulación permite analizar distintas combinaciones de políticas y tasas de demanda para observar su impacto en los costos del sistema.
+
+El programa está organizado en torno a una estructura de eventos discretos, donde los eventos se gestionan mediante una cola de prioridad, utilizando el módulo `heapq`. Los eventos considerados son:
+
+\begin{itemize}
+    \item La llegada de un pedido proveniente del proveedor.
+    \item Una demanda de un cliente.
+    \item La evaluación mensual del nivel de inventario.
+    \item El fin de la simulación (tras un año).
+\end{itemize} 
+
+Los parámetros clave del modelo se reciben por línea de comandos, lo que permite ejecutar fácilmente múltiples pruebas con diferentes configuraciones. Entre ellos se encuentran los niveles \( s \) y \( S \), y el tiempo promedio entre demandas.
+
+El nivel inicial de inventario se establece en \( S \), y se asume que la simulación tiene una duración de 12 meses. Durante ese período, las demandas se generan aleatoriamente siguiendo una distribución discreta con pesos definidos, representando tamaños posibles de pedido de los clientes (por ejemplo, entre 1 y 5 unidades).
+
+Cada vez que ocurre una demanda, el inventario se reduce en función del tamaño solicitado. Si, al evaluar el inventario a comienzos de cada mes, el nivel es menor que \( s \) y no hay pedidos en curso, se genera un nuevo pedido cuya llegada se programará con un retraso aleatorio entre 0.5 y 1.0 meses.
+
+Como ya dijimos, el sistema considera distintos tipos de costos:
+
+\begin{itemize}
+    \item Costo de orden: compuesto por un valor fijo y un costo incremental por unidad pedida.
+    \item Costo de mantenimiento: proporcional al inventario positivo promedio.
+    \item Costo por faltante: proporcional al inventario negativo promedio (cuando no se puede satisfacer la demanda).
+\end{itemize}
+
+Durante la simulación, se lleva un registro continuo del nivel de inventario a intervalos regulares (cada 0.1 meses), lo cual permite generar gráficos de comportamiento a futuro. Finalizada cada corrida, se calculan los costos acumulados y promedios, y se almacenan en un archivo CSV (`resultados_inv.csv`) junto con los niveles de inventario a lo largo del tiempo.
+
+Se realizaron 10 corridas para cada política, con el objetivo de reducir la variabilidad inherente a la simulación estocástica y obtener valores representativos.
+
+\subsubsection{para nivel de inventario a lo largo del tiempo y promedios politica}
+
+\subsection{En Anylogic}
+
 
 \section{Conclusiones}
 
