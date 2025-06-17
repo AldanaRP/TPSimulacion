@@ -67,6 +67,85 @@ Este trabajo práctico tiene como objetivo estudiar, mediante simulación, el co
 \section{Introducción}
 En el ámbito de la investigación operativa y la gestión de sistemas, la simulación emerge como una herramienta poderosa para analizar y comprender el comportamiento de sistemas complejos que, de otro modo, serían difíciles de modelar analíticamente. Este trabajo se enfoca en la simulación de dos modelos : el modelo de colas M/M/1 y un modelo de inventario, fundamentales para la optimización de procesos en diversos sectores, desde la manufactura y la logística hasta los servicios y las telecomunicaciones.
 
+\section{Teoría de Colas}
+Una \textbf{cola} se forma frecuentemente cuando una serie de \textit{clientes} solicita un \textit{servicio}, y tanto el servicio como los clientes tienen un comportamiento probabilístico. La primera aplicación de la teoría de colas se atribuye al matemático danés Erlang, quien en 1909 utilizó estos conceptos para calcular el tamaño de las centralitas telefónicas.
+
+La teoría de colas es una disciplina de la Investigación Operativa que se enfoca en proponer modelos para la gestión eficiente de líneas de espera. Una \textbf{línea de espera} es una fila compuesta por uno o varios clientes que esperan para recibir un servicio. Estos clientes pueden ser personas, objetos, máquinas que requieren mantenimiento, contenedores de mercancías para ser embarcados, elementos de inventario para ser utilizados, entre otros.
+
+Una línea de espera se forma debido a un desequilibrio temporal entre la demanda de un servicio y la capacidad del sistema para gestionarlo. Los modelos de líneas de espera son muy útiles para determinar cómo operar un sistema de colas de manera más eficaz, ya que permiten encontrar un balance adecuado entre el costo del servicio y el tiempo de espera. Proporcionar demasiada capacidad de servicio implica costos excesivos, mientras que una capacidad insuficiente resulta en esperas prolongadas con consecuencias negativas.
+
+Aunque cada situación específica tiene características diferentes, existen cuatro elementos comunes a toda Línea de Espera:
+\begin{itemize}
+    \item Una población de clientes que genera clientes potenciales.
+
+    \item Una línea o fila de espera formada por los clientes.
+
+    \item La instalación del servicio, formada por una persona (o un equipo), una máquina (o grupo de máquinas) que se requiere para proveer el servicio que el cliente solicita.
+
+    \item Una regla de prioridad para seleccionar al siguiente cliente que será atendido por la instalación de servicio
+\end{itemize}
+
+El término ``cliente'' se utiliza en un sentido general, pudiendo ser una persona, piezas esperando su turno para ser procesadas, una lista de trabajo esperando para ser impresas en una impresora de red, etc.
+
+Básicamente la mayoría de los modelos de colas consiste: Los \textbf{clientes} que requieren un \textbf{servicio} se generan en el tiempo en una \textbf{fuente de llegada}, después entran al \textit{sistema} y se unen a una cola. 
+
+En determinado momento se selecciona a un cliente de la cola para proporcionarle el servicio mediante alguna regla conocida como \textbf{disciplina de la cola}. Se lleva a cabo el servicio que el cliente requiere mediante un \textbf{Mecanismo de servicio}, y después el cliente sale del sistema de colas.
+\subsection{Tipos de Sistemas de Cola}
+Los sistemas de cola se pueden diferenciar teniendo en cuenta el número de llegadas, salidas, colas y servidores. Así tenemos los siguientes casos:
+\begin{itemize}
+    \item \textbf{Una cola y un servidor:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\linewidth]{imagenes/cola-servidor.png}
+    \end{figure}
+
+    \item \textbf{Una cola y múltiples servidores:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\linewidth]{imagenes/cola_mult-serv.jpg}
+    \end{figure}
+
+    \item \textbf{Varias colas y múltiples servidores:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\linewidth]{imagenes/mult-colas_mult-serv.png}
+    \end{figure}
+
+    \item \textbf{Una cola y servidores secuenciales:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\linewidth]{imagenes/cola-servSec.png}
+    \end{figure}
+\end{itemize}
+
+\subsection{Características de los Sistemas de Cola}
+Un sistema de colas se describe adecuadamente con seis características:
+\begin{itemize}
+    \item \textbf{Fuente de llegada de clientes}:  En situaciones de colas habituales, la llegada de clientes es estocástica, esto es, depende de una variable aleatoria, con lo que se necesita conocer la distribución probabilística entre dos llegadas sucesivas de clientes. La fuente de llegada puede variar con el tiempo, cuando se mantiene constante se dice \textit{estacionaria}, si varía (por ejemplo, con las horas del día) se llama \textit{no estacionaria}.
+
+    Pueden contemplarse distintas situaciones: Clientes que llegan independiente o simultáneamente (llegan lotes), en este último caso hay que definir su distribución probabilística.  Clientes que abandonan la cola por ser demasiado larga o que tras esperar mucho abandonan.
+    
+    \item \textbf{Patrón de servicio de servidores}: Pueden presentar un tiempo de servicio variable, en cuyo caso hay que asociar una función de probabilidad. Pueden atender en lotes o de modo individual. El tiempo de servicio puede variar con el número de clientes en la cola, trabajando más rápido o más lento, en este caso se conoce como \textit{patrones de servicio dependientes}. El patrón de servicio puede ser \textit{no estacionario} variando con el tiempo transcurrido.
+    
+    \item \textbf{Disciplina de cola}: Es la regla en el orden que se van a seleccionar los clientes que se encuentran a la espera de ser atendidos en la cola, existen varias reglas, entre las más comunes se pueden encontrar:
+        \begin{itemize}
+            \item \textit{FIFO (first in first out)}: Se atiende al cliente en el orden que llegan a la cola, el primero en llegar será el primero en ser atendido. En los modelos básicos de colas se supone como normal la disciplina de primero en entrar, primero en salir, a menos que se establezca de otra manera.
+
+            \item  \textit{LIFO (last in first out)}: Consiste en atender primero al que ha llegado de último, también se le conoce como ``pila''.
+
+            \item   \textit{RSS (random selection of service)}: Se selecciona a los clientes de una cola de forma aleatoria, con algún procedimiento de prioridad o algún otra preclasificación.
+
+            \item \textit{Processor Sharing}: Todos los clientes perimentan con eficacia el mismo retraso, ya que comparten entre todos los clientes de la cola la capacidad del sistema atendiendo a todos por igual.
+        \end{itemize}
+    
+    \item \textbf{Capacidad del sistema}: Es el número máximo de clientes que pueden estar dentro del sistema haciendo cola antes de ser atendidos para recibir el servicio, al igual que la fuente de llegada este número puede ser finito o infinito.
+    
+    \item \textbf{Número de canales de servicio}: Es preferible utilizar sistemas multiservicios con una única línea de espera para todos que con una cola por servidor. Al hablar de canales de servicio paralelo se trata generalmente de una cola que alimenta a varios servidores.
+    
+    \item \textbf{Número de etapas de servicio}: Puede ser unietapa o multietapa, en este último el cliente puede pasar por un número de etapas mayor que uno. En algunos sistemas multietapa se admite la vuelta atrás o reciclado, modo habitual en sistemas productivos como controles de calidad y reprocesos.
+\end{itemize}
+
+\section{Modelos de Colas Simples}
 \subsection{Modelo M/M/1}
 
 El modelo M/M/1 es la base de la teoría de colas, representando un sistema simple con una única cola, un único servidor, llegadas que siguen una distribución de Poisson y tiempos de servicio que se distribuyen exponencialmente. La simulación de este modelo no solo permite validar las fórmulas analíticas que describen su comportamiento en estado estacionario, sino que también ofrece una visión invaluable de su dinámica transitoria, es decir, cómo el sistema se comporta desde que inicia hasta que alcanza un equilibrio. Comprender estas dinámicas es crucial para el diseño y la gestión de sistemas donde la espera es una parte inherente del proceso, como centros de llamadas, estaciones de servicio o líneas de producción.
@@ -100,6 +179,22 @@ Para el sistema con cola infinita y en estado estable (\( \rho = \lambda / \mu <
 \subsubsection*{Experimentos propuestos}
 
 Se evaluarán diferentes valores de \( \lambda \) (25\%, 50\%, 75\%, 100\%, 125\% de \( \mu \)), con un mínimo de 10 corridas por experimento.
+
+\subsubsection{Planteamiento del Problema}
+En este trabajo se analiza un sistema de cola de un solo servidor (ver Figura \ref{fig:cola-unico}) en el cual los tiempos entre llegadas \(A_1, A_2, \ldots\) son variables aleatorias independientes e idénticamente distribuidas (IID), lo que significa que los tiempos entre llegadas tienen la misma distribución de probabilidad. Un cliente que llega y encuentra al servidor desocupado entra inmediatamente en servicio, y los tiempos de servicio \(S_1, S_2, \ldots\) de los clientes sucesivos son variables aleatorias IID, independientes de los tiempos entre llegadas. Un cliente que llega y encuentra al servidor ocupado se une al final de una única cola. Al finalizar el servicio de un cliente, el servidor selecciona a un cliente de la cola (si hay alguno) siguiendo el principio FIFO (primero en entrar, primero en salir).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{imagenes/cola-unico-ser.png}
+    \caption{Sistema de colas de servidor único}
+    \label{fig:cola-unico}
+\end{figure}
+
+
+
+
+
+
+
 
 \vspace{1em}
 
